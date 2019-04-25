@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -154,34 +155,78 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
 
         dialog.setContentView(R.layout.update_quantity);
         dialog.setTitle("Bridges");
+        final EditText price = dialog.findViewById(R.id.price);
         Button update = (Button) dialog.findViewById(R.id.update);
         TextView title = (TextView) dialog.findViewById(R.id.textView21);
         final Spinner name = (Spinner) dialog.findViewById(R.id.spinner4);
 
         title.setText(city.getName());
-        _adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        _adapter.setDropDownViewResource(R.layout.item_spinner);
         name.setAdapter(_adapter);
         name.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 quant = Integer.parseInt(parent.getItemAtPosition(position).toString());
                 //    Toast.makeText(ViewItem.this, ""+ quant, Toast.LENGTH_SHORT).show();
-            }
+                }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 //  Toast.makeText(AddItem.this, "ID  " , Toast.LENGTH_SHORT).show();
-
-            }
+                }
         });
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-             //   update(city.getId()+"", quant+"");
+                update(city.getId()+"", quant+"", price.getText()+"");
             }
         });
         dialog.show();
+    }
+
+    public void update(final String id, final String q, final String price) {
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.updateBasketItem, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+                    // Check for error node in json
+                    if (!error) {
+                        String errorMsg = jObj.getString("message");
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                        dialog.hide();
+                        getProducts(b.getString("id"));
+
+                    } else {
+                        String errorMsg = jObj.getString("message");
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Toast.makeText(getApplicationContext(),										error.getMessage() + " response error", Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id", id);
+                params.put("q", q);
+                params.put("price", price);
+                return params;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 
     public void getPartners(final String id)

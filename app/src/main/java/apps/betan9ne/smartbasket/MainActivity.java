@@ -2,6 +2,8 @@ package apps.betan9ne.smartbasket;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         addlist = findViewById(R.id.imageView3);
         recyclerView =  findViewById(R.id.shopping_list);
         feedItems = new ArrayList<>();
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
 
         adapter = new ListAdapter(MainActivity.this, feedItems);
 
@@ -63,6 +67,23 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                 startActivity(intent);
             }
             });
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.shop:
+                                Intent intent = new Intent(getApplicationContext(), ShopActivity.class);
+                                startActivity(intent);
+                                break;
+                            case R.id.lists:
+
+                            case R.id.profile:
+
+                        }
+                        return true;
+                    }
+                });
         list(1+"");
     }
 

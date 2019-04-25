@@ -15,6 +15,7 @@
 
         android:layout_marginTop="16dp"
         android:text="Update Quanity"
+        android:textColor="#000"
         android:textSize="16sp" />
 
     <LinearLayout
@@ -31,17 +32,46 @@
             android:layout_marginLeft="32dp"
             android:layout_marginTop="16dp"
             android:text="TextView"
+            android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="32dp"
+            android:paddingTop="24dp"
+            android:text="Quantity"
+            android:textColor="#000" />
 
         <Spinner
             android:id="@+id/spinner4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
             android:layout_marginTop="16dp"
+            android:layout_marginRight="32dp"
+            android:background="#000"
             android:padding="16dp" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="32dp"
+            android:paddingTop="24dp"
+            android:text="Price"
+            android:textColor="#000" />
+
+        <EditText
+            android:id="@+id/price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:paddingLeft="32dp"
+            android:textColor="#000" />
 
         <Button
             android:id="@+id/update"
