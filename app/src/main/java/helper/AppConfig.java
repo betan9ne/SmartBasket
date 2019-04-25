@@ -14,6 +14,8 @@ public class AppConfig {
 	public static String add_Item = SERVER + "list/v1/add_Item";
 	public static String getItems = SERVER + "list/v1/getItems";
 	public static String updateBasketItem = SERVER + "list/v1/updateBasketItem";
+	public static String add_item_basket = SERVER + "list/v1/add_item_basket";
+	public static String update_basket_name = SERVER + "list/v1/update_basket_name";
 
 
 }

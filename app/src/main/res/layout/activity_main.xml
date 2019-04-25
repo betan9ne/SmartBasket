@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/background_light"
     tools:context=".MainActivity">
 
 
@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
         android:text="Shopping List"
+        android:textColor="#000"
         android:textSize="24sp" />
 
     <android.support.v7.widget.RecyclerView
@@ -21,7 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
-        android:layout_below="@+id/textView3" >
+        android:layout_above="@+id/bottom_navigation"
+        android:layout_below="@+id/textView3">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -36,7 +38,9 @@
         <ImageView
             android:id="@+id/imageView3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
+            android:layout_above="@+id/shopping_list"
+            android:layout_below="@+id/textView3"
             android:layout_alignParentStart="false"
             android:layout_alignParentBottom="false"
             app:srcCompat="@drawable/add_list_button" />

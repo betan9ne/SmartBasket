@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -53,6 +54,7 @@ public class ShopActivity extends AppCompatActivity implements ItemClickListener
         setContentView(R.layout.activity_shop);
 
         recyclerView =  findViewById(R.id.list);
+        dialog    = new Dialog(ShopActivity.this);
         feedItems = new ArrayList<>();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         adapter = new ShopItemAdapter(ShopActivity.this, feedItems);
@@ -62,6 +64,8 @@ public class ShopActivity extends AppCompatActivity implements ItemClickListener
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
+        _adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, Numbers);
+
         list();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -76,6 +80,9 @@ public class ShopActivity extends AppCompatActivity implements ItemClickListener
                                 startActivity(intenta);
                                 break;
                             case R.id.profile:
+                                Intent intent = new Intent(getApplicationContext(), CreateList.class);
+                                startActivity(intent);
+                                break;
 
                         }
                         return true;
@@ -95,6 +102,7 @@ public class ShopActivity extends AppCompatActivity implements ItemClickListener
         final Spinner name = (Spinner) dialog.findViewById(R.id.spinner4);
 
         title.setText(list.getName());
+        price.setText(list.getPrice()+"");
         _adapter.setDropDownViewResource(R.layout.item_spinner);
         name.setAdapter(_adapter);
         name.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -113,10 +121,55 @@ public class ShopActivity extends AppCompatActivity implements ItemClickListener
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                update(list.getId()+"", quant+"", price.getText()+"");
+                update("2", list.getId()+"", price.getText()+"", quant+"", "4");
             }
         });
         dialog.show();
+    }
+
+    public void update(final String list_id, final String item_id, final String price, final String quantity, final String added_by) {
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.add_item_basket, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+                    // Check for error node in json
+                    if (!error) {
+                        String errorMsg = jObj.getString("message");
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                        dialog.hide();
+
+                    } else {
+                        String errorMsg = jObj.getString("message");
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Toast.makeText(getApplicationContext(),										error.getMessage() + " response error", Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("list_id", list_id);
+                params.put("item_id", item_id);
+                params.put("quantity", quantity);
+                params.put("price", price);
+                params.put("added_by", added_by);
+                return params;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(strReq);
     }
 
     public void list()
@@ -141,7 +194,7 @@ public class ShopActivity extends AppCompatActivity implements ItemClickListener
                                             BasketItem item = new BasketItem();
                                             item.setId(feedObj.getInt("id"));
                                             item.setName(feedObj.getString("name"));
-                                             item.setPrice(feedObj.getInt("price"));
+                                             item.setPrice(feedObj.getDouble("price"));
                                              feedItems.add(item);
                                         }
                                     }
