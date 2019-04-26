@@ -2,5 +2,10 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#000000</color>
+
+    <color name="twitter_blue">#1da1f2</color>
+    <color name="deep_gray">#ff657786</color>
+
+    <color name="tab_selected">@color/twitter_blue</color>
 </resources>

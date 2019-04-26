@@ -6,9 +6,7 @@ public class BasketItem {
     int id;
     int quan;
 
-
-    public BasketItem()
-    {}
+    public BasketItem(){}
 
     public BasketItem(int id, String name, String addedBy, double price, int quan)
     {

@@ -1,15 +1,17 @@
-package apps.betan9ne.smartbasket;
+package fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.android.volley.Request;
@@ -26,30 +28,37 @@ import java.util.HashMap;
 import java.util.Map;
 
 import adapters.ListAdapter;
+import apps.betan9ne.smartbasket.BasketActivity;
+import apps.betan9ne.smartbasket.CreateList;
+import apps.betan9ne.smartbasket.MainActivity;
+import apps.betan9ne.smartbasket.R;
+import apps.betan9ne.smartbasket.ShopActivity;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
 import objects.ProductItem;
 
-public class MainActivity extends AppCompatActivity implements ItemClickListener {
+public class ListFragment extends Fragment implements ItemClickListener {
     private RecyclerView recyclerView;
     private ListAdapter adapter;
     private ArrayList<ProductItem> feedItems;
     ImageView addlist;
+    public ListFragment(){}
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        addlist = findViewById(R.id.imageView3);
-        recyclerView =  findViewById(R.id.shopping_list);
+        View v = inflater.inflate(R.layout.activity_main, container, false);
+
+        addlist = v.findViewById(R.id.imageView3);
+        recyclerView =  v.findViewById(R.id.shopping_list);
         feedItems = new ArrayList<>();
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = v.findViewById(R.id.bottom_navigation);
 
 
-        adapter = new ListAdapter(MainActivity.this, feedItems);
+        adapter = new ListAdapter(getContext(), feedItems);
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
@@ -58,17 +67,17 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         addlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CreateList.class);
+                Intent intent = new Intent(getContext(), CreateList.class);
                 startActivity(intent);
             }
-            });
+        });
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.shop:
-                                Intent intent = new Intent(getApplicationContext(), ShopActivity.class);
+                                Intent intent = new Intent(getContext(), ShopActivity.class);
                                 startActivity(intent);
                                 break;
                             case R.id.lists:
@@ -80,19 +89,22 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                     }
                 });
         list(1+"");
+
+        return v;
     }
+
 
     @Override
     public void onClick(View view, int position) {
         final ProductItem list = feedItems.get(position);
-      //  Toast.makeText(this, ""+ list.getName(), Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(MainActivity.this, BasketActivity.class);
+        //  Toast.makeText(this, ""+ list.getName(), Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(getContext(), BasketActivity.class);
         i.putExtra("name", list.getName());
         i.putExtra("id", list.getId()+"");
         startActivity(i);
     }
 
-        public void list(final String id)
+    public void list(final String id)
     {
         recyclerView.removeAllViews();
         feedItems.clear();
@@ -110,23 +122,23 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                                     } else {
                                         for (int i = 0; i < feedArray.length(); i++) {
                                             JSONObject feedObj = (JSONObject) feedArray.get(i);
-                                       //     Toast.makeText(MainActivity.this, ""+ feedObj.length() , Toast.LENGTH_SHORT).show();
+                                            //     Toast.makeText(MainActivity.this, ""+ feedObj.length() , Toast.LENGTH_SHORT).show();
                                             ProductItem item = new ProductItem();
-                                          item.setId(feedObj.getInt("id"));
-                                          item.setName(feedObj.getString("name"));
-                                          item.setUser_id(feedObj.getInt("user_id"));
-                                          item.setItem_count(feedObj.getInt("item_count"));
+                                            item.setId(feedObj.getInt("id"));
+                                            item.setName(feedObj.getString("name"));
+                                            item.setUser_id(feedObj.getInt("user_id"));
+                                            item.setItem_count(feedObj.getInt("item_count"));
                                             feedItems.add(item);
                                         }
                                     }
                                     adapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
-                                //    Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                    //    Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
 
                                 }
 
                             } catch (JSONException e) {
-                             //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
                             }
                         }
                         //	pDialog.hide();
@@ -149,5 +161,12 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 
     }
 
-
+    public static ListFragment newInstance(String text) {
+        ListFragment f = new ListFragment();
+        Bundle b = new Bundle();
+        b.putString("msg", text);
+        f.setArguments(b);
+        return f;
+    }
 }
+

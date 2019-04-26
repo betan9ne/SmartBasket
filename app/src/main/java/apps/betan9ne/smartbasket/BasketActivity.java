@@ -43,7 +43,7 @@ import objects.BasketItem;
 
 public class BasketActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, ItemClickListener {
     Bundle b;
-    ImageView imageView4;
+    ImageView imageView4, imageView5;
     TextView list_name, pat;
      RecyclerView recyclerView;
     private BasketAdapter adapter;
@@ -60,6 +60,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         list_name = findViewById(R.id.textView3);
         pat = findViewById(R.id.textView7);
         imageView4 = findViewById(R.id.imageView4);
+        imageView5 = findViewById(R.id.imageView5);
 
         recyclerView = (RecyclerView) findViewById(R.id.list);
         dialog    = new Dialog(BasketActivity.this);
@@ -102,6 +103,29 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                     @Override
                     public void onClick(View view) {
                         update_basket_name(b_id +"", name.getText().toString());
+                    }
+                });
+                dialog.show();
+
+
+            }
+        });
+
+        imageView5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.setContentView(R.layout.invite_partner);
+                dialog.setTitle("Bridges");
+                final EditText email = dialog.findViewById(R.id.email);
+                Button update = (Button) dialog.findViewById(R.id.update);
+                TextView title = (TextView) dialog.findViewById(R.id.textView21);
+
+                title.setText(list_name.getText());
+
+                update.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        send_invite(1 +"", email.getText().toString(), b_id);
                     }
                 });
                 dialog.show();
@@ -262,7 +286,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         };
         AppController.getInstance().addToRequestQueue(strReq);
     }
-public void update_basket_name(final String id, final String name){
+    public void update_basket_name(final String id, final String name){
 
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 AppConfig.update_basket_name, new Response.Listener<String>() {
@@ -300,6 +324,50 @@ public void update_basket_name(final String id, final String name){
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("id", id);
                 params.put("name", name);
+
+                return params;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
+
+    public void send_invite(final String list_owner, final String list_invite, final String list_id){
+
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.send_invite, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+                    // Check for error node in json
+                    if (!error) {
+                        String errorMsg = jObj.getString("message");
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                        dialog.hide();
+
+                    } else {
+                        String errorMsg = jObj.getString("message");
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Toast.makeText(getApplicationContext(),										error.getMessage() + " response error", Toast.LENGTH_LONG).show();
+            }
+        }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("list_owner", list_owner);
+                params.put("list_invite", list_invite);
+                params.put("list_id", list_id);
 
                 return params;
             }

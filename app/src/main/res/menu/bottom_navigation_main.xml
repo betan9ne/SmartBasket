@@ -4,19 +4,26 @@
     <item
         android:id="@+id/shop"
         android:enabled="true"
+        android:checked="true"
         android:icon="@drawable/outline_local_grocery_store_white_18dp"
         android:title="Shop"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/lists"
         android:enabled="true"
         android:icon="@drawable/outline_list_alt_white_18dp"
         android:title="Lists"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/search"
+        android:enabled="true"
+        android:icon="@drawable/baseline_search_black_18dp"
+        android:title="Lists"
+        app:showAsAction="always" />
     <item
         android:id="@+id/profile"
         android:enabled="true"
         android:icon="@drawable/outline_person_outline_white_18dp"
         android:title="Profile"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

@@ -16,6 +16,9 @@ public class AppConfig {
 	public static String updateBasketItem = SERVER + "list/v1/updateBasketItem";
 	public static String add_item_basket = SERVER + "list/v1/add_item_basket";
 	public static String update_basket_name = SERVER + "list/v1/update_basket_name";
+	public static String send_invite = SERVER + "list/v1/send_invite";
+	public static String getInvites = SERVER + "list/v1/getInvites";
+	public static String update_invite = SERVER + "list/v1/update_invite";
 
 
 }

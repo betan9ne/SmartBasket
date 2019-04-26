@@ -1,16 +1,14 @@
-package apps.betan9ne.smartbasket;
+package fragments;
 
 import android.app.Dialog;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -34,12 +32,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import adapters.ShopItemAdapter;
+import apps.betan9ne.smartbasket.R;
+import apps.betan9ne.smartbasket.ShopActivity;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
 import objects.BasketItem;
 
-public class ShopActivity extends AppCompatActivity implements ItemClickListener {
+public class ShopFrament extends Fragment implements ItemClickListener {
     private RecyclerView recyclerView;
     private ShopItemAdapter adapter;
     private ArrayList<BasketItem> feedItems;
@@ -47,47 +47,30 @@ public class ShopActivity extends AppCompatActivity implements ItemClickListener
     ArrayAdapter<String> _adapter;
     static final String[] Numbers = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12","13","14","15" };
 
+    public ShopFrament(){}
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shop);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        recyclerView =  findViewById(R.id.list);
-        dialog    = new Dialog(ShopActivity.this);
+        View v = inflater.inflate(R.layout.activity_shop, container, false);
+        recyclerView =  v.findViewById(R.id.list);
+        dialog    = new Dialog(getContext());
         feedItems = new ArrayList<>();
-        BottomNavigationViewEx bottomNavigationView = findViewById(R.id.bottom_bar);
-        adapter = new ShopItemAdapter(ShopActivity.this, feedItems);
+        BottomNavigationViewEx bottomNavigationView = v.findViewById(R.id.bottom_bar);
+        adapter = new ShopItemAdapter(getContext(), feedItems);
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
-        _adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, Numbers);
+        _adapter= new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Numbers);
 
         list();
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.shop:
-                                break;
-                            case R.id.lists:
-                                Intent intenta = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(intenta);
-                                break;
-                            case R.id.profile:
-                                Intent intent = new Intent(getApplicationContext(), InvitesActivity.class);
-                                startActivity(intent);
-                                break;
-
-                        }
-                        return true;
-                    }
-                });
+        return v;
     }
+
     Integer quant;
     @Override
     public void onClick(View view, int position) {
@@ -138,12 +121,12 @@ public class ShopActivity extends AppCompatActivity implements ItemClickListener
                     // Check for error node in json
                     if (!error) {
                         String errorMsg = jObj.getString("message");
-                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
                         dialog.hide();
 
                     } else {
                         String errorMsg = jObj.getString("message");
-                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -193,8 +176,8 @@ public class ShopActivity extends AppCompatActivity implements ItemClickListener
                                             BasketItem item = new BasketItem();
                                             item.setId(feedObj.getInt("id"));
                                             item.setName(feedObj.getString("name"));
-                                             item.setPrice(feedObj.getDouble("price"));
-                                             feedItems.add(item);
+                                            item.setPrice(feedObj.getDouble("price"));
+                                            feedItems.add(item);
                                         }
                                     }
                                     adapter.notifyDataSetChanged();
@@ -218,4 +201,13 @@ public class ShopActivity extends AppCompatActivity implements ItemClickListener
         AppController.getInstance().addToRequestQueue(jsonObjReq);
 
     }
+
+    public static ShopFrament newInstance(String text) {
+        ShopFrament f = new ShopFrament();
+        Bundle b = new Bundle();
+        b.putString("msg", text);
+        f.setArguments(b);
+        return f;
+    }
 }
+
