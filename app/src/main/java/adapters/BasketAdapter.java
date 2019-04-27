@@ -76,6 +76,7 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.MyViewHold
         holder.name.setText(album.getName()+ " (" +  album.getQ()+")");
         holder.price.setText("K"+album.getPrice());
         holder.q.setText(album.getAddedBy());
+        holder.cost.setText("Total: "+album.getPrice() * album.getQ());
 
     }
 

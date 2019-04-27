@@ -2,16 +2,25 @@ package objects;
 
 public class ProductItem {
 	private int  id, user_id, item_count;
-	private String name;
+	private String name, f_name;
 
 	public ProductItem()
 	{}
-	public ProductItem(int id, int user_id, int item_count, String name) {
+	public ProductItem(int id, int user_id, int item_count, String name, String f_name) {
 		super();
 		this.id = id;
 		this.user_id = user_id;
 		 this.name = name;
 		 this.item_count = item_count;
+		 this.f_name = f_name;
+	}
+
+	public void setF_name(String f_name) {
+		this.f_name = f_name;
+	}
+
+	public String getF_name() {
+		return f_name;
 	}
 
 	public int getItem_count() {

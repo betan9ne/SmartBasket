@@ -23,6 +23,7 @@ import java.util.List;
 
 import fragments.InviteFragment;
 import fragments.ListFragment;
+import fragments.ListsFragment;
 import fragments.SearchFragment;
 import fragments.ShopFrament;
 
@@ -64,7 +65,7 @@ public class ContinerActivity extends AppCompatActivity {
                     loadFragment(fragment);
                     return true;
                 case R.id.lists:
-                    fragment = new ListFragment();
+                    fragment = new ListsFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.search:
@@ -107,7 +108,7 @@ public class ContinerActivity extends AppCompatActivity {
         invite.setArguments(bundle);
 
         // create friends fragment and add it
-        ListFragment list = new ListFragment();
+        ListsFragment list = new ListsFragment();
         bundle = new Bundle();
         bundle.putString("title", "List");
         list.setArguments(bundle);
