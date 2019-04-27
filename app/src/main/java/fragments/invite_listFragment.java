@@ -59,7 +59,7 @@ public class invite_listFragment extends Fragment implements ItemClickListener {
 
 
 
-        list(7+"");
+        list(1+"");
 
         return v;
     }

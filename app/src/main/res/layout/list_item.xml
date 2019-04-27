@@ -19,7 +19,6 @@
             android:layout_height="match_parent"
             android:layout_weight="2.5"
             android:padding="16dp"
-            android:text="01"
             android:textColor="#000"
             android:textSize="24sp" />
 
@@ -31,7 +30,7 @@
             android:layout_marginRight="0dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="0.5"
-            android:background="#6390FA"
+            android:background="#1E1951"
             android:orientation="vertical"
             android:padding="16dp">
 

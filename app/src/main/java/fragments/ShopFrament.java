@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import adapters.ShopItemAdapter;
@@ -36,13 +37,17 @@ import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
 import objects.BasketItem;
+import objects.ProductItem;
 
 public class ShopFrament extends Fragment implements ItemClickListener {
     private RecyclerView recyclerView;
     private ShopItemAdapter adapter;
     private ArrayList<BasketItem> feedItems;
+    private ArrayList<ProductItem> listItem;
     Dialog dialog;
     ArrayAdapter<String> _adapter;
+    private ArrayList<String> lists = new ArrayList<String>();
+
     static final String[] Numbers = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12","13","14","15" };
 
     public ShopFrament(){}
@@ -54,20 +59,23 @@ public class ShopFrament extends Fragment implements ItemClickListener {
         recyclerView =  v.findViewById(R.id.list);
         dialog    = new Dialog(getContext());
         feedItems = new ArrayList<>();
-          adapter = new ShopItemAdapter(getContext(), feedItems);
+        listItem = new ArrayList<ProductItem>();
+
+        adapter = new ShopItemAdapter(getContext(), feedItems);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
+
         _adapter= new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Numbers);
 
         list();
-
+        getMyLists(1+"");
         return v;
     }
-
+    String list_id;
     Integer quant;
     @Override
     public void onClick(View view, int position) {
@@ -79,6 +87,18 @@ public class ShopFrament extends Fragment implements ItemClickListener {
         Button update = (Button) dialog.findViewById(R.id.update);
         TextView title = (TextView) dialog.findViewById(R.id.textView21);
         final Spinner name = (Spinner) dialog.findViewById(R.id.spinner4);
+        final Spinner lists = (Spinner) dialog.findViewById(R.id.spinner5);
+
+        List<String> lables = new ArrayList<String>();
+        for (int i = 0; i < listItem.size(); i++) {
+            lables.add(listItem.get(i).getName());
+        }
+        // Creating adapter for spinner
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, lables);
+        // Drop down layout style - list view with radio button
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // attaching data adapter to spinner
+        lists.setAdapter(spinnerAdapter);
 
         title.setText(list.getName());
         price.setText(list.getPrice()+"");
@@ -97,10 +117,22 @@ public class ShopFrament extends Fragment implements ItemClickListener {
             }
         });
 
+        lists.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                list_id =  listItem.get(position).getId() + "";
+              }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //  Toast.makeText(AddItem.this, "ID  " , Toast.LENGTH_SHORT).show();
+            }
+        });
+
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                update("2", list.getId()+"", price.getText()+"", quant+"", "4");
+                update(list_id, list.getId()+"", price.getText()+"", quant+"", "1");
             }
         });
         dialog.show();
@@ -195,6 +227,60 @@ public class ShopFrament extends Fragment implements ItemClickListener {
                 //	pDialog.hide();
             }
         });
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+
+    }
+
+
+    public void getMyLists(final String id)
+    {
+        listItem.clear();
+        StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
+                AppConfig.getMyLists,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (response != null) {
+                            try {
+                                JSONObject jObj = new JSONObject(response);
+                                try {
+                                    JSONArray feedArray = jObj.getJSONArray(("list"));
+                                    if (feedArray.length() == 0) {
+                                    } else {
+                                        for (int i = 0; i < feedArray.length(); i++) {
+                                            JSONObject feedObj = (JSONObject) feedArray.get(i);
+                                            ProductItem item = new ProductItem();
+                                            item.setId(feedObj.getInt("id"));
+                                            item.setName(feedObj.getString("name"));
+                                            listItem.add(item);
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    //    Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+
+                                }
+
+                            } catch (JSONException e) {
+                                //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        //	pDialog.hide();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //	pDialog.hide();
+            }
+        }){
+
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id", id);
+                return params;
+            }
+        };
         AppController.getInstance().addToRequestQueue(jsonObjReq);
 
     }

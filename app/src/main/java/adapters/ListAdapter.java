@@ -79,21 +79,21 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> 
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         ProductItem album = albumList.get(position);
 
-        if(position == 0)
+       if(position % 4 == 0)
         {
-            holder.bck.setBackgroundColor(Color.parseColor("#6390FA"));
+            holder.bck.setBackgroundColor(Color.parseColor("#35479D"));
         }
-        else if(position == 1)
+        else if(position % 3 == 0)
         {
-            holder.bck.setBackgroundColor(Color.parseColor("#11D2B9"));
-
+            holder.bck.setBackgroundColor(Color.parseColor("#28267A"));
         }
-        else if (position == 2)
+        else if (position % 2 == 0)
         {
-            holder.bck.setBackgroundColor(Color.parseColor("#D8D8D8"));
+            holder.bck.setBackgroundColor(Color.parseColor("#3D9AD5"));
         }
         holder.name.setText(album.getName());
         holder.itemcount.setText(album.getItem_count()+" Items");
+        holder.partners.setText(album.getF_name());
 
     }
 
