@@ -12,14 +12,15 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_weight="1"
+        android:paddingLeft="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:text="Shop"
-        android:textColor="#000"
-        android:textSize="24sp" />
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:typeface="sans" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
@@ -30,13 +31,4 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp" />
 
-    <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
-        android:id="@+id/bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
-        app:itemIconTint="@drawable/selector"
-        app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/bottom_navigation_main"/>
 </RelativeLayout>

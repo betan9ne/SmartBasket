@@ -7,12 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
@@ -25,9 +27,8 @@ import fragments.SearchFragment;
 import fragments.ShopFrament;
 
 public class ContinerActivity extends AppCompatActivity {
-    private ViewPager viewPager;
-     private VpAdapter adapter;
-
+    private FrameLayout viewPager;
+    private Fragment fragment;
     // collections
     private SparseIntArray items;// used for change ViewPager selected item
     private List<Fragment> fragments;// used for ViewPager adapter
@@ -41,12 +42,43 @@ public class ContinerActivity extends AppCompatActivity {
         bottomNavigationView= findViewById(R.id.bottom_bar);
         viewPager =findViewById(R.id.view_pager);
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
+        //Load the HomeFragment when app is loaded
+        fragment = new ShopFrament();
+        loadFragment(fragment);
         initView();
         initData();
-        initEvent();
+
 
     }
 
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.shop:
+                    fragment = new ShopFrament();
+                    loadFragment(fragment);
+                    return true;
+                case R.id.lists:
+                    fragment = new ListFragment();
+                    loadFragment(fragment);
+                    return true;
+                case R.id.search:
+                    fragment = new SearchFragment();
+                    loadFragment(fragment);
+                    return true;
+                case R.id.profile:
+                    fragment = new InviteFragment();
+                    loadFragment(fragment);
+                    return true;
+            }
+            return false;
+        }
+        };
     /**
      * change BottomNavigationViewEx style
      */
@@ -97,93 +129,19 @@ public class ContinerActivity extends AppCompatActivity {
         items.put(R.id.search, 2);
         items.put(R.id.profile, 3);
 
-        // set adapter
-        adapter = new VpAdapter(getSupportFragmentManager(), fragments);
-       viewPager.setAdapter(adapter);
     }
 
-    /**
-     * set listeners
-     */
-    private void initEvent() {
-        // set listener to change the current item of view pager when click bottom nav item
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            private int previousPosition = -1;
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = 0;
-                switch (item.getItemId()) {
-                    case R.id.shop:
-                        id = 0;
-                        break;
-                    case R.id.lists:
-                        id = 1;
-                        break;
-                    case R.id.search:
-                        id = 2;
-                        case R.id.profile:
-                        id = 3;
-                        break;
-                }
-//                if(previousPosition != id) {
-//                  bind.vp.setCurrentItem(id, false);
-//                  previousPosition = id;
-//                }
-
-                // you can write as above.
-                // I recommend this method. You can change the item order or counts without update code here.
-             /*   int position = items.get(item.getItemId());
-                if (previousPosition != position) {
-                    // only set item when item changed
-                    previousPosition = position;
-                    Log.i("pager", "-----bnve-------- previous item:" + bottomNavigationView.getCurrentItem() + " current item:" + position + " ------------------");
-                    bottomNavigationView.setCurrentItem(position);
-                }*/
-                return true;
-            }
-        });
-
-        // set listener to change the current checked item of bottom nav when scroll view pager
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Log.i("pager", "-----ViewPager-------- previous item:" + bottomNavigationView.getCurrentItem() + " current item:" + position + " ------------------");
-                bottomNavigationView.setCurrentItem(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+    @Override
+    public void onBackPressed() {
+        //Close the application when back button is pressed
+        finish();
     }
 
-    /**
-     * view pager adapter
-     */
-    private static class VpAdapter extends FragmentPagerAdapter {
-        private List<Fragment> data;
+    private void loadFragment(Fragment fragment) {
 
-        public VpAdapter(FragmentManager fm, List<Fragment> data) {
-            super(fm);
-            this.data = data;
-        }
-
-        @Override
-        public int getCount() {
-            return data.size();
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return data.get(position);
-        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.view_pager, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
-
 }

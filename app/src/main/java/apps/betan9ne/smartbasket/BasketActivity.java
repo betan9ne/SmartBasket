@@ -24,6 +24,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
@@ -202,9 +203,61 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
             Integer id = feedItems.get(viewHolder.getAdapterPosition()).getId();
 
             adapter.removeItem(viewHolder.getAdapterPosition());
-
+            delete_item(id);
         }
     }
+
+    public void delete_item(final Integer id)
+    {
+        StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
+                AppConfig.delete_item,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Log.d(response.toString());
+                        if (response != null) {
+                            try
+                            {
+                                JSONObject jObj = new JSONObject(response);
+                                try {
+                                    boolean error = jObj.getBoolean("error");
+                                    // Check for error node in json
+                                    if (!error) {
+                                        getProducts(b_id);
+                                        Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
+                                    } else {
+
+                                        Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Volley", "Error: " + error.getMessage());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id", id+"");
+                return params;
+            }
+        };
+
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+
+
+    }
+
     Integer quant;
     @Override
     public void onClick(View view, int position) {

@@ -2,14 +2,11 @@ package fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -30,9 +27,7 @@ import java.util.Map;
 import adapters.ListAdapter;
 import apps.betan9ne.smartbasket.BasketActivity;
 import apps.betan9ne.smartbasket.CreateList;
-import apps.betan9ne.smartbasket.MainActivity;
 import apps.betan9ne.smartbasket.R;
-import apps.betan9ne.smartbasket.ShopActivity;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
@@ -53,7 +48,6 @@ public class ListFragment extends Fragment implements ItemClickListener {
         addlist = v.findViewById(R.id.imageView3);
         recyclerView =  v.findViewById(R.id.shopping_list);
         feedItems = new ArrayList<>();
-        BottomNavigationView bottomNavigationView = v.findViewById(R.id.bottom_navigation);
 
 
         adapter = new ListAdapter(getContext(), feedItems);
@@ -71,23 +65,7 @@ public class ListFragment extends Fragment implements ItemClickListener {
                 startActivity(intent);
             }
         });
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.shop:
-                                Intent intent = new Intent(getContext(), ShopActivity.class);
-                                startActivity(intent);
-                                break;
-                            case R.id.lists:
 
-                            case R.id.profile:
-
-                        }
-                        return true;
-                    }
-                });
         list(1+"");
 
         return v;

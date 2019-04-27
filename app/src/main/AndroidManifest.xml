@@ -34,7 +34,6 @@
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".InvitesActivity" />
-        <activity android:name=".ShopActivity"></activity>
     </application>
 
 </manifest>

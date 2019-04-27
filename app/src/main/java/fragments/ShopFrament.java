@@ -21,7 +21,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +32,6 @@ import java.util.Map;
 
 import adapters.ShopItemAdapter;
 import apps.betan9ne.smartbasket.R;
-import apps.betan9ne.smartbasket.ShopActivity;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
@@ -56,8 +54,7 @@ public class ShopFrament extends Fragment implements ItemClickListener {
         recyclerView =  v.findViewById(R.id.list);
         dialog    = new Dialog(getContext());
         feedItems = new ArrayList<>();
-        BottomNavigationViewEx bottomNavigationView = v.findViewById(R.id.bottom_bar);
-        adapter = new ShopItemAdapter(getContext(), feedItems);
+          adapter = new ShopItemAdapter(getContext(), feedItems);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(mLayoutManager);

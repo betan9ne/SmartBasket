@@ -19,6 +19,8 @@ public class AppConfig {
 	public static String send_invite = SERVER + "list/v1/send_invite";
 	public static String getInvites = SERVER + "list/v1/getInvites";
 	public static String update_invite = SERVER + "list/v1/update_invite";
+	public static String search = SERVER + "list/v1/search";
+	public static String delete_item = SERVER + "list/v1/delete_item";
 
 
 }
