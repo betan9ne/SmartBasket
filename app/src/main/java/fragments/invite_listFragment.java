@@ -31,13 +31,17 @@ import apps.betan9ne.smartbasket.R;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
+import helper.SQLiteHandler;
+import helper.SessionManagera;
 import objects.ProductItem;
 
 public class invite_listFragment extends Fragment implements ItemClickListener {
     private RecyclerView recyclerView;
     private ListAdapter adapter;
     private ArrayList<ProductItem> feedItems;
-
+    private SQLiteHandler db;
+    private SessionManagera session;
+    String u_id;
     public invite_listFragment(){}
 
     @Override
@@ -57,9 +61,14 @@ public class invite_listFragment extends Fragment implements ItemClickListener {
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
 
+        db = new SQLiteHandler(getContext());
 
+        session = new SessionManagera(getContext());
+        HashMap<String, String> user = db.getUserDetails(invite_listFragment.class.getSimpleName());
 
-        list(1+"");
+        u_id = user.get("u_id");
+
+        list(u_id);
 
         return v;
     }

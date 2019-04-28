@@ -36,10 +36,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import adapters.BasketAdapter;
+import fragments.invite_listFragment;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
 import helper.RecyclerItemTouchHelper;
+import helper.SQLiteHandler;
+import helper.SessionManagera;
 import objects.BasketItem;
 
 public class BasketActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, ItemClickListener {
@@ -53,6 +56,9 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
     ArrayAdapter<String> _adapter;
     static final String[] Numbers = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12","13","14","15" };
     Dialog dialog, dialog2;
+    private SQLiteHandler db;
+    private SessionManagera session;
+    String u_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +84,13 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+
+        db = new SQLiteHandler(getApplicationContext());
+
+        session = new SessionManagera(getApplicationContext());
+        HashMap<String, String> user = db.getUserDetails(BasketActivity.class.getSimpleName());
+
+        u_id = user.get("u_id");
 
         if(getIntent().getExtras() != null)
         {
@@ -126,7 +139,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                 update.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        send_invite(1 +"", email.getText().toString(), b_id);
+                        send_invite(u_id, email.getText().toString(), b_id);
                     }
                 });
                 dialog.show();
@@ -263,7 +276,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
     public void onClick(View view, int position) {
         final BasketItem city = feedItems.get(position);
 
-        dialog.setContentView(R.layout.update_quantity);
+        dialog.setContentView(R.layout.update_quantity2);
         dialog.setTitle("Bridges");
         final EditText price = dialog.findViewById(R.id.price);
         Button update = (Button) dialog.findViewById(R.id.update);
@@ -278,7 +291,6 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 quant = Integer.parseInt(parent.getItemAtPosition(position).toString());
-                //    Toast.makeText(ViewItem.this, ""+ quant, Toast.LENGTH_SHORT).show();
                 }
 
             @Override
@@ -339,6 +351,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         };
         AppController.getInstance().addToRequestQueue(strReq);
     }
+
     public void update_basket_name(final String id, final String name){
 
         StringRequest strReq = new StringRequest(Request.Method.POST,

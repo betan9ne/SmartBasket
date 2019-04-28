@@ -1,7 +1,9 @@
 package fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,6 +19,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,19 +35,25 @@ import java.util.Map;
 
 import adapters.PartnersAdapter;
 import apps.betan9ne.smartbasket.InvitesActivity;
+import apps.betan9ne.smartbasket.LoginActivity;
 import apps.betan9ne.smartbasket.R;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
+import helper.SQLiteHandler;
+import helper.SessionManagera;
 import objects.PartnersItem;
 
 public class InviteFragment extends Fragment implements ItemClickListener {
     private RecyclerView recyclerView;
     private PartnersAdapter adapter;
     private ArrayList<PartnersItem> feedItems;
+    private SQLiteHandler db;
     Dialog dialog;
+     private SessionManagera session;
+    String u_id;
     public InviteFragment(){}
-
+    GoogleSignInClient googleSignInClient;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -49,7 +62,7 @@ public class InviteFragment extends Fragment implements ItemClickListener {
         recyclerView =  v.findViewById(R.id.list);
         dialog    = new Dialog(getContext());
         feedItems = new ArrayList<>();
-
+        TextView logout = v.findViewById(R.id.textView);
         adapter = new PartnersAdapter(getContext(), feedItems);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
@@ -57,10 +70,39 @@ public class InviteFragment extends Fragment implements ItemClickListener {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
 
-        getInvites(7+"");
+        googleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+        db = new SQLiteHandler(getContext());
+        HashMap<String, String> user = db.getUserDetails(invite_listFragment.class.getSimpleName());
 
+        u_id = user.get("u_id");
+
+        getInvites(u_id);
+        logout.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                logoutUser();
+            }
+        });
         return v;
+    }
+
+    private void logoutUser() {
+        googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Intent intent=new Intent(getContext(),LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                db.deleteUsers();
+            }
+        });
+
+
+
     }
 
     @Override
@@ -104,7 +146,7 @@ public class InviteFragment extends Fragment implements ItemClickListener {
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
                         dialog.hide();
-                        getInvites(7+"");
+                        getInvites(u_id);
                     } else {
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();

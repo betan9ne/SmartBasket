@@ -2,6 +2,7 @@ package adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +65,7 @@ public class PartnersAdapter  extends RecyclerView.Adapter<PartnersAdapter.MyVie
     public void onBindViewHolder(final PartnersAdapter.MyViewHolder holder, int position) {
         //holder.bind(albumList.get(position), listener);
         PartnersItem album = albumList.get(position);
-        holder.name.setText(album.getF_name() + " has invited you to join their "+ album.getName());
+        holder.name.setText(Html.fromHtml("<b>" + album.getF_name() + "</b>") + " has invited you to join their "+ album.getName());
 
 
 

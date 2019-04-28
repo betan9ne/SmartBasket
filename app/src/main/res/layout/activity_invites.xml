@@ -24,10 +24,10 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
+        android:layout_height="wrap_content"
         android:layout_below="@+id/textView"
         android:paddingLeft="24dp"
+        android:background="#3D9AD5"
         android:paddingRight="24dp" />
 
 </RelativeLayout>

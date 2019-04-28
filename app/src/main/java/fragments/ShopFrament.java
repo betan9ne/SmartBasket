@@ -36,6 +36,8 @@ import apps.betan9ne.smartbasket.R;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
+import helper.SQLiteHandler;
+import helper.SessionManagera;
 import objects.BasketItem;
 import objects.ProductItem;
 
@@ -44,6 +46,9 @@ public class ShopFrament extends Fragment implements ItemClickListener {
     private ShopItemAdapter adapter;
     private ArrayList<BasketItem> feedItems;
     private ArrayList<ProductItem> listItem;
+    private SQLiteHandler db;
+    private SessionManagera session;
+    String u_id;
     Dialog dialog;
     ArrayAdapter<String> _adapter;
     private ArrayList<String> lists = new ArrayList<String>();
@@ -70,9 +75,14 @@ public class ShopFrament extends Fragment implements ItemClickListener {
         adapter.setClickListener(this);
 
         _adapter= new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Numbers);
+        db = new SQLiteHandler(getContext());
 
+        session = new SessionManagera(getContext());
+        HashMap<String, String> user = db.getUserDetails(invite_listFragment.class.getSimpleName());
+
+        u_id = user.get("u_id");
         list();
-        getMyLists(1+"");
+        getMyLists(u_id);
         return v;
     }
     String list_id;
@@ -132,7 +142,7 @@ public class ShopFrament extends Fragment implements ItemClickListener {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                update(list_id, list.getId()+"", price.getText()+"", quant+"", "1");
+                update(list_id, list.getId()+"", price.getText()+"", quant+"", u_id);
             }
         });
         dialog.show();

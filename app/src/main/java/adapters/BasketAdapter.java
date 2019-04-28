@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 
@@ -76,7 +77,7 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.MyViewHold
         holder.name.setText(album.getName()+ " (" +  album.getQ()+")");
         holder.price.setText("K"+album.getPrice());
         holder.q.setText(album.getAddedBy());
-        holder.cost.setText("Total: "+album.getPrice() * album.getQ());
+        holder.cost.setText("Total: "+Float.parseFloat( album.getPrice() * album.getQ()+""));
 
     }
 

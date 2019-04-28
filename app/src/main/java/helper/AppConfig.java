@@ -23,6 +23,7 @@ public class AppConfig {
 	public static String delete_item = SERVER + "list/v1/delete_item";
 	public static String getInvitedLists = SERVER + "list/v1/getInvitedLists";
 	public static String getMyLists = SERVER + "list/v1/getMyLists";
+	public static String registe = SERVER + "list/v1/registe";
 
 
 }

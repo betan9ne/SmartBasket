@@ -11,9 +11,7 @@
         android:id="@+id/shopping_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/textView3">
+ >
 
     </android.support.v7.widget.RecyclerView>
 

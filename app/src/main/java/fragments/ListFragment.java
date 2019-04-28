@@ -31,6 +31,8 @@ import apps.betan9ne.smartbasket.R;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
+import helper.SQLiteHandler;
+import helper.SessionManagera;
 import objects.ProductItem;
 
 public class ListFragment extends Fragment implements ItemClickListener {
@@ -38,6 +40,9 @@ public class ListFragment extends Fragment implements ItemClickListener {
     private ListAdapter adapter;
     private ArrayList<ProductItem> feedItems;
     ImageView addlist;
+    private SQLiteHandler db;
+    private SessionManagera session;
+    String u_id;
     public ListFragment(){}
 
     @Override
@@ -65,8 +70,14 @@ public class ListFragment extends Fragment implements ItemClickListener {
                 startActivity(intent);
             }
         });
+        db = new SQLiteHandler(getContext());
 
-        list(1+"");
+        session = new SessionManagera(getContext());
+        HashMap<String, String> user = db.getUserDetails(ListFragment.class.getSimpleName());
+
+        u_id = user.get("u_id");
+
+        list(u_id);
 
         return v;
     }

@@ -12,14 +12,16 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="#000"
-        android:textSize="28sp"
-        android:textStyle="bold" />
+        android:textSize="24sp"
+        android:typeface="sans" />
 
     <TextView
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_weight="1"
         android:textColor="#FF6F66"
-        android:textSize="24sp" />
+        android:textSize="18sp" />
 </LinearLayout>
