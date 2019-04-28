@@ -364,7 +364,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                     // Check for error node in json
                     if (!error) {
                         String errorMsg = jObj.getString("message");
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), ContinerActivity.class);
                         startActivity(intent);
                         Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
                         dialog.hide();

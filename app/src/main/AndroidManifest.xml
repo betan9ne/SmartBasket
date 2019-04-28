@@ -38,7 +38,9 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".InvitesActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:theme="@style/AppTheme.NoActionBar" android:name=".ContinerActivity"/>
+        <activity
+            android:name=".ContinerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

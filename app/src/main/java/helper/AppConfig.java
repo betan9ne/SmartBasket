@@ -24,6 +24,8 @@ public class AppConfig {
 	public static String getInvitedLists = SERVER + "list/v1/getInvitedLists";
 	public static String getMyLists = SERVER + "list/v1/getMyLists";
 	public static String registe = SERVER + "list/v1/registe";
+	public static String add_basket = SERVER + "list/v1/add_basket";
+	public static String delete_list = SERVER + "list/v1/delete_list";
 
 
 }
