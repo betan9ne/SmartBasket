@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onLoggedIn(GoogleSignInAccount googleSignInAccount) {
-        registerUser(googleSignInAccount.getDisplayName(), googleSignInAccount.getEmail(), googleSignInAccount.getId());
+        registerUser(googleSignInAccount.getDisplayName(), googleSignInAccount.getEmail(), googleSignInAccount.getId(), googleSignInAccount.getPhotoUrl()+"");
 
     }
     @Override
@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void registerUser(final String phone,  final String email, final String x_id) {
+    private void registerUser(final String phone,  final String email, final String x_id, final String photo) {
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 AppConfig.registe, new Response.Listener<String>() {
             @Override
@@ -118,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                         u_id =  jObj.getString("id");
                         _email = jObj.getString("email");
                         _name = jObj.getString("name");
+                        String photo_ = jObj.getString("photo");
                         //   Toast.makeText(getApplicationContext(),"Database "+_name, Toast.LENGTH_LONG).show();
                         db.addUser(_email, u_id, _name);
                         session.setLogin(true);
@@ -153,6 +154,7 @@ public class LoginActivity extends AppCompatActivity {
                 params.put("email", email);
                 params.put("name", phone);
                 params.put("x_id", x_id);
+                params.put("photo", photo);
                 return params;
             }
         };

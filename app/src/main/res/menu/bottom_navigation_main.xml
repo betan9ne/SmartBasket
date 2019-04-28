@@ -23,7 +23,7 @@
     <item
         android:id="@+id/profile"
         android:enabled="true"
-        android:icon="@drawable/outline_person_outline_white_18dp"
+        android:icon="@drawable/baseline_notifications_none_black_18dp"
         android:title="Profile"
         app:showAsAction="always" />
 </menu>

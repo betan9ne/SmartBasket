@@ -14,6 +14,6 @@
         android:paddingRight="24dp"
         android:paddingBottom="8dp"
         android:text="TextView"
-        android:textColor="@android:color/background_light"
+        android:textColor="@android:color/darker_gray"
         android:textSize="18sp" />
 </LinearLayout>
