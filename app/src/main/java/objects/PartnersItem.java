@@ -5,14 +5,24 @@ public class PartnersItem {
     int status;
    String f_name;
    String name;
+   String photo;
 
     public PartnersItem(){}
-    public PartnersItem(int id, String name, String f_name,  int status)
+    public PartnersItem(int id, String name, String f_name, String photo,  int status)
     {
         this.id = id;
         this.name = name;
         this.f_name = f_name;
         this.status= status;
+        this.photo = photo;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public int getId() {

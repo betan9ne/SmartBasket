@@ -200,6 +200,7 @@ public class InviteFragment extends Fragment implements ItemClickListener {
                                             item.setName(feedObj.getString("name"));
                                             item.setF_name(feedObj.getString("f_name"));
                                             item.setStatus(feedObj.getInt("status"));
+                                            item.setPhoto(feedObj.getString("photo"));
                                             feedItems.add(item);
                                         }
                                     }

@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                         _name = jObj.getString("name");
                         String photo_ = jObj.getString("photo");
                         //   Toast.makeText(getApplicationContext(),"Database "+_name, Toast.LENGTH_LONG).show();
-                        db.addUser(_email, u_id, _name);
+                        db.addUser(_email, u_id, _name, photo_);
                         session.setLogin(true);
                         Intent intent = new Intent(getApplicationContext(), ContinerActivity.class);
                         //   intent.putExtra(MainActivity.GOOGLE_ACCOUNT, googleSignInAccount);

@@ -8,6 +8,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+import helper.LruBitmapCache;
+
 public class AppController extends Application {
 
 	public static final String TAG = AppController.class.getSimpleName();
@@ -34,9 +36,16 @@ public class AppController extends Application {
 
 		return mRequestQueue;
 	}
-	
-	 
-	
+
+	public ImageLoader getImageLoader() {
+		getRequestQueue();
+		if (mImageLoader == null) {
+			mImageLoader = new ImageLoader(this.mRequestQueue,
+					new LruBitmapCache());
+		}
+		return this.mImageLoader;
+	}
+
 	public <T> void addToRequestQueue(Request<T> req, String tag) {
 		req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
 		getRequestQueue().add(req);

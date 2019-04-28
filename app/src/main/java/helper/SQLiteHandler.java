@@ -25,6 +25,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 	private static final String KEY_EMAIL = "email";
 	private static final String KEY_PHONE = "name";
 	private static final String KEY_UID = "u_id";
+	private static final String KEY_PHOTO = "photo";
 
 
 	public SQLiteHandler(Context context) {
@@ -38,7 +39,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 				+ KEY_ID + " INTEGER PRIMARY KEY," 
 				+ KEY_EMAIL + " TEXT,"
 				+ KEY_PHONE + " TEXT,"
-				+ KEY_UID + " TEXT" + ")";
+				+ KEY_UID + " TEXT,"
+				+ KEY_PHOTO + " TEXT" + ")";
 		db.execSQL(CREATE_LOGIN_TABLE);
 
 
@@ -57,16 +59,17 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 	/**
 	 * Storing user details in database
 	 * */
-	public void addUser( String email, String u_id, String phone) {
+	public void addUser( String email, String u_id, String phone, String photo) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(KEY_EMAIL, email);
 		values.put(KEY_PHONE, phone);
 		values.put(KEY_UID, u_id);
+		values.put(KEY_PHOTO, photo);
 		// Inserting Row
 		long id = db.insert(TABLE_LOGIN, null, values);
 		db.close(); // Closing database connection
-	 	Log.d("get_user", "user created: " + id + " " + email + " " + phone + " " +u_id);
+	 	Log.d("get_user", "user created: " + id + " " + email + " " + photo + " " +u_id);
 	}
 
 
@@ -85,7 +88,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 			user.put("email", cursor.getString(1));
 			user.put("name", cursor.getString(2));
 			user.put("u_id", cursor.getString(3));
-		
+			user.put("photo", cursor.getString(4));
+
 		}
 		cursor.close();
 		db.close();

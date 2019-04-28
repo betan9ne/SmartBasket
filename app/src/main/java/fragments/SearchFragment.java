@@ -114,7 +114,7 @@ public class SearchFragment extends Fragment implements ItemClickListener {
                     empty.setVisibility(View.GONE);
                     // searchView expanded
                 } else {
-                    empty.setVisibility(View.VISIBLE);
+                   // empty.setVisibility(View.VISIBLE);
                     // searchView not expanded
                 }
             }
