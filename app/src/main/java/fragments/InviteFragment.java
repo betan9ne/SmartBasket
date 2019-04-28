@@ -64,7 +64,7 @@ public class InviteFragment extends Fragment implements ItemClickListener {
         feedItems = new ArrayList<>();
         TextView logout = v.findViewById(R.id.textView);
         adapter = new PartnersAdapter(getContext(), feedItems);
-
+        session = new SessionManagera(getContext());
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -94,6 +94,7 @@ public class InviteFragment extends Fragment implements ItemClickListener {
         googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                session.setLogin(false);
                 Intent intent=new Intent(getContext(),LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
