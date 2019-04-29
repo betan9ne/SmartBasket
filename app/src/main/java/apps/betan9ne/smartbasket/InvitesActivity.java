@@ -154,7 +154,7 @@ public class InvitesActivity extends AppCompatActivity implements ItemClickListe
                                             item.setId(feedObj.getInt("id"));
                                             item.setName(feedObj.getString("name"));
                                             item.setF_name(feedObj.getString("f_name"));
-                                            item.setStatus(feedObj.getInt("status"));
+                                            item.setStatus(feedObj.getString("status"));
                                             feedItems.add(item);
                                         }
                                     }

@@ -76,7 +76,7 @@ public class PartnersAdapter  extends RecyclerView.Adapter<PartnersAdapter.MyVie
         {
             imageLoader = AppController.getInstance().getImageLoader();
         }
-        holder.name.setText(Html.fromHtml("<b>" + album.getF_name() + "</b>") + " has invited you to join their "+ album.getName());
+        holder.name.setText(album.getF_name()+ " has invited you to join their "+ album.getName()+". " + album.getStatus()+"");
 
       imageLoader.get(album.getPhoto(), new ImageLoader.ImageListener() {
             @Override

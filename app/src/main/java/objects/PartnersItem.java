@@ -2,13 +2,13 @@ package objects;
 
 public class PartnersItem {
     int id;
-    int status;
+    String status;
    String f_name;
    String name;
    String photo;
 
     public PartnersItem(){}
-    public PartnersItem(int id, String name, String f_name, String photo,  int status)
+    public PartnersItem(int id, String name, String f_name, String photo,  String status)
     {
         this.id = id;
         this.name = name;
@@ -29,7 +29,7 @@ public class PartnersItem {
         return id;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -53,7 +53,7 @@ public class PartnersItem {
         this.name = name;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }
