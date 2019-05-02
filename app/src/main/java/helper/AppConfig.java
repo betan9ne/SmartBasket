@@ -26,6 +26,9 @@ public class AppConfig {
 	public static String registe = SERVER + "list/v1/registe";
 	public static String add_basket = SERVER + "list/v1/add_basket";
 	public static String delete_list = SERVER + "list/v1/delete_list";
+	public static String delete_partner = SERVER + "list/v1/delete_partner";
+	public static String get_basket_total = SERVER + "list/v1/get_basket_total";
+	public static String add_receipt = SERVER + "list/upload.php";
 
 
 }

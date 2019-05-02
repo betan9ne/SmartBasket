@@ -34,6 +34,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import adapters.PartnersAdapter;
+import apps.betan9ne.smartbasket.AddReceiptActivity;
+import apps.betan9ne.smartbasket.CreateList;
 import apps.betan9ne.smartbasket.InvitesActivity;
 import apps.betan9ne.smartbasket.LoginActivity;
 import apps.betan9ne.smartbasket.R;
@@ -94,11 +96,11 @@ public class InviteFragment extends Fragment implements ItemClickListener {
         googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                session.setLogin(false);
-                Intent intent=new Intent(getContext(),LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+              //  session.setLogin(false);
+                Intent intent=new Intent(getContext(), AddReceiptActivity.class);
+              //  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-                db.deleteUsers();
+              //  db.deleteUsers();
             }
         });
 

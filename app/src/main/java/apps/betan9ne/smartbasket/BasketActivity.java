@@ -33,6 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import adapters.BasketAdapter;
@@ -44,14 +45,16 @@ import helper.RecyclerItemTouchHelper;
 import helper.SQLiteHandler;
 import helper.SessionManagera;
 import objects.BasketItem;
+import objects.PartnersItem;
 
 public class BasketActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, ItemClickListener {
     Bundle b;
     ImageView imageView4, imageView5;
-    TextView list_name, pat;
+    TextView list_name, pat, partners, total;
      RecyclerView recyclerView;
     private BasketAdapter adapter;
     private ArrayList<BasketItem> feedItems;
+    private ArrayList<PartnersItem> partnersItems;
     String b_id;
     ArrayAdapter<String> _adapter;
     static final String[] Numbers = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12","13","14","15" };
@@ -65,6 +68,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         setContentView(R.layout.activity_basket);
 
         list_name = findViewById(R.id.textView3);
+        total = findViewById(R.id.textView13);
         pat = findViewById(R.id.textView7);
         imageView4 = findViewById(R.id.imageView4);
         imageView5 = findViewById(R.id.imageView5);
@@ -73,6 +77,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         dialog    = new Dialog(BasketActivity.this);
         dialog2    = new Dialog(BasketActivity.this);
         feedItems = new ArrayList<>();
+        partnersItems = new ArrayList<>();
         adapter = new BasketAdapter(BasketActivity.this, feedItems);
         _adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, Numbers);
 
@@ -99,31 +104,78 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
 
             getPartners(b.getString("id"));
             getProducts(b.getString("id"));
+            get_basket_total(b_id);
             list_name.setText(b.getString("name"));
         }
 
-        imageView4.setOnClickListener(new View.OnClickListener() {
+        pat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.setContentView(R.layout.update_list_name);
-                dialog.setTitle("Bridges");
-                final EditText name = dialog.findViewById(R.id.name);
-                Button update = (Button) dialog.findViewById(R.id.update);
-                TextView title = (TextView) dialog.findViewById(R.id.textView21);
 
-                title.setText(list_name.getText());
+                dialog.setContentView(R.layout.remove_partner);
+                dialog.setTitle("Bridges");
+                final EditText price = dialog.findViewById(R.id.price);
+                Button update = (Button) dialog.findViewById(R.id.update);
+                 final Spinner name =   dialog.findViewById(R.id.spinner4);
+
+                List<String> lables = new ArrayList<String>();
+                for (int i = 0; i < partnersItems.size(); i++) {
+                    lables.add(partnersItems.get(i).getF_name());
+                }
+                // Creating adapter for spinner
+                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, lables);
+                // Drop down layout style - list view with radio button
+                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                // attaching data adapter to spinner
+                name.setAdapter(spinnerAdapter);
+
+                name.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        quant = partnersItems.get(position).getId();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        //  Toast.makeText(AddItem.this, "ID  " , Toast.LENGTH_SHORT).show();
+                    }
+                });
 
                 update.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        update_basket_name(b_id +"", name.getText().toString());
+                        delete_partners(quant);
+                        dialog.hide();
                     }
                 });
                 dialog.show();
-
-
             }
-        });
+            });
+
+        imageView4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.setContentView(R.layout.update_list_name);
+                        dialog.setTitle("Bridges");
+                        final EditText name = dialog.findViewById(R.id.name);
+                        Button update = (Button) dialog.findViewById(R.id.update);
+                        TextView title = (TextView) dialog.findViewById(R.id.textView21);
+
+                        title.setText(list_name.getText());
+
+                        update.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                update_basket_name(b_id +"", name.getText().toString());
+
+                            }
+                        });
+                        dialog.show();
+
+
+                    }
+                });
+
 
         imageView5.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,7 +191,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                 update.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        send_invite(u_id, email.getText().toString(), b_id);
+                        send_invite(u_id, email.getText().toString(), b_id, email.getText().toString());
                     }
                 });
                 dialog.show();
@@ -271,6 +323,58 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
 
     }
 
+    public void delete_partners(final Integer id)
+    {
+        StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
+                AppConfig.delete_partner,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Log.d(response.toString());
+                        if (response != null) {
+                            try
+                            {
+                                JSONObject jObj = new JSONObject(response);
+                                try {
+                                    boolean error = jObj.getBoolean("error");
+                                    // Check for error node in json
+                                    if (!error) {
+                                        getPartners(b_id);
+                                        Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
+                                    } else {
+
+                                        Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Volley", "Error: " + error.getMessage());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("list_id", b_id+"");
+                params.put("invite_id", id+"");
+                return params;
+            }
+        };
+
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+
+
+    }
+
     Integer quant;
     @Override
     public void onClick(View view, int position) {
@@ -303,6 +407,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
             @Override
             public void onClick(View view) {
                 update(city.getId()+"", quant+"", price.getText()+"");
+
             }
         });
         dialog.show();
@@ -323,7 +428,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                         Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
                         dialog.hide();
                         getProducts(b.getString("id"));
-
+                        get_basket_total(b_id);
                     } else {
                         String errorMsg = jObj.getString("message");
                         Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
@@ -366,7 +471,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                         String errorMsg = jObj.getString("message");
                         Intent intent = new Intent(getApplicationContext(), ContinerActivity.class);
                         startActivity(intent);
-                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "List name updated", Toast.LENGTH_SHORT).show();
                         dialog.hide();
 
                     } else {
@@ -397,7 +502,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
-    public void send_invite(final String list_owner, final String list_invite, final String list_id){
+    public void send_invite(final String list_owner, final String list_invite, final String list_id, final String email){
 
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 AppConfig.send_invite, new Response.Listener<String>() {
@@ -412,9 +517,14 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                         Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
                         dialog.hide();
 
-                    } else {
-                        String errorMsg = jObj.getString("message");
-                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                    } else if(error) {
+                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                        share.putExtra(Intent.EXTRA_SUBJECT, "Smart Basket");
+                        share.putExtra(Intent.EXTRA_TEXT, "I want to add you to my shopping list. download SmartBasket and send me your email address");
+                        startActivity(Intent.createChooser(share, "Share link!"));
+                        dialog.hide();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -443,6 +553,8 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
 
     public void getPartners(final String id)
     {
+        pat.setText("");
+        partnersItems.clear();
            StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
                 AppConfig.getPartners,
                 new Response.Listener<String>() {
@@ -457,11 +569,54 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                                     } else {
                                         for (int i = 0; i < feedArray.length(); i++) {
                                             JSONObject feedObj = (JSONObject) feedArray.get(i);
+                                            PartnersItem item =  new PartnersItem();
+                                            item.setId(feedObj.getInt("liat_invite"));
+                                            item.setF_name(feedObj.getString("name"));
+                                            partnersItems.add(item);
                                              pat.append(feedObj.getString("name")+ ", ");
                                            }
                                     }
     } catch (JSONException e) {
                                   }
+
+                            } catch (JSONException e) {
+                                //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        //	pDialog.hide();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //	pDialog.hide();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id", id);
+                return params;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+
+    }
+
+    public void get_basket_total(final String id)
+    {
+        total.setText("");
+            StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
+                AppConfig.get_basket_total,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (response != null) {
+                            try {
+                                JSONObject jObj = new JSONObject(response);
+                                String count = jObj.getString("count");
+                                String _total = jObj.getString("total");
+                                total.setText("Items: "+ count+", Total Cost: K"+_total);
 
                             } catch (JSONException e) {
                                 //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();

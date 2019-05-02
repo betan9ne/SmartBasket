@@ -21,4 +21,6 @@
         app:itemIconTint="@drawable/selector"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_navigation_main"/>
+
+
 </RelativeLayout>

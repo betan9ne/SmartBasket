@@ -51,11 +51,15 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/textView13"
         android:layout_below="@+id/pat"
         android:layout_alignParentTop="false"
         android:layout_marginLeft="24dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="24dp" />
+        android:layout_marginRight="24dp">
+
+
+    </android.support.v7.widget.RecyclerView>
 
     <ImageView
         android:id="@+id/imageView4"
@@ -64,5 +68,16 @@
         android:layout_alignTop="@+id/textView3"
         android:layout_alignEnd="@+id/pat"
         app:srcCompat="@drawable/round_edit_black_18dp" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+          android:background="#35479D"
+        android:padding="24dp"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:textSize="24dp" />
 
 </RelativeLayout>
