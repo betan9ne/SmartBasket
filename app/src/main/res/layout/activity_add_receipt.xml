@@ -50,6 +50,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Select Receipt" />
+
+        <Button
+            android:id="@+id/pick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Take picture of Receipt" />
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@tools:sample/avatars[0]" />
     </LinearLayout>
 
 </RelativeLayout>

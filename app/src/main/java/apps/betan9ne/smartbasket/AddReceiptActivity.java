@@ -1,10 +1,14 @@
 package apps.betan9ne.smartbasket;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -33,6 +37,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -42,22 +48,29 @@ import fragments.invite_listFragment;
 import helper.AppConfig;
 import helper.SQLiteHandler;
 
+import static android.media.MediaRecorder.VideoSource.CAMERA;
+
 public class AddReceiptActivity extends AppCompatActivity {
-    private Button btn;
+    private Button btn, pick;
     private EditText imageView;
+    private ImageView iv;
     private SQLiteHandler db;
     String u_id;
-    private final int GALLERY = 1;
+
     private String upload_URL = AppConfig.add_receipt;
     JSONObject jsonObject;
     RequestQueue rQueue;
+    private static final String IMAGE_DIRECTORY = "/smartBasket";
+    private int GALLERY = 1, CAMERA = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_receipt);
 
         btn = findViewById(R.id.button);
+        pick = findViewById(R.id.pick);
         imageView = findViewById(R.id.descr);
+        iv = findViewById(R.id.iv);
         requestMultiplePermissions();
 
         db = new SQLiteHandler(getApplicationContext());
@@ -73,27 +86,85 @@ public class AddReceiptActivity extends AppCompatActivity {
                 startActivityForResult(galleryIntent, GALLERY);
             }
         });
+
+        pick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhotoFromCamera();
+            }
+        });
+    }
+
+    private void takePhotoFromCamera() {
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, CAMERA);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == this.RESULT_CANCELED) {
             return;
         }
         if (requestCode == GALLERY) {
             if (data != null) {
-                Uri contentURI = data.getData();
-                try {
+                if (resultCode == this.RESULT_CANCELED) {
+                    return;
+                }
+                if (requestCode == GALLERY) {
+                    if (data != null) {
+                        Uri contentURI = data.getData();
+                        try {
 
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
-                      uploadImage(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(AddReceiptActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
+                            uploadImage(bitmap);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(AddReceiptActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
             }
+
+        } else if (requestCode == CAMERA) {
+            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+            iv.setImageBitmap(thumbnail);
+            saveImage(thumbnail);
+            if(thumbnail != null)
+            {
+                uploadImage(thumbnail);
+            }
+            Toast.makeText(AddReceiptActivity.this, "Image Saved!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public String saveImage(Bitmap myBitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        File wallpaperDirectory = new File(
+                Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
+        // have the object build the directory structure, if needed.
+        if (!wallpaperDirectory.exists()) {
+            wallpaperDirectory.mkdirs();
+        }
+
+        try {
+            File f = new File(wallpaperDirectory, Calendar.getInstance()
+                    .getTimeInMillis() + ".jpg");
+            f.createNewFile();
+            FileOutputStream fo = new FileOutputStream(f);
+            fo.write(bytes.toByteArray());
+            MediaScannerConnection.scanFile(this,
+                    new String[]{f.getPath()},
+                    new String[]{"image/jpeg"}, null);
+            fo.close();
+            Log.d("TAG", "File Saved::---&gt;" + f.getAbsolutePath());
+            return f.getAbsolutePath();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return "";
     }
 
     private void uploadImage(Bitmap bitmap){
@@ -104,7 +175,7 @@ public class AddReceiptActivity extends AppCompatActivity {
         try {
             jsonObject = new JSONObject();
             String imgname = String.valueOf(Calendar.getInstance().getTimeInMillis());
-            jsonObject.put("name", imgname);
+            jsonObject.put("name", imgname+".jpg");
             //  Log.e("Image name", etxtUpload.getText().toString().trim());
             jsonObject.put("image", encodedImage);
              jsonObject.put("u_id", u_id);
