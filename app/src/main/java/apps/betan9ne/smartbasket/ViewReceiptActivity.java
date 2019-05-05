@@ -2,14 +2,11 @@ package apps.betan9ne.smartbasket;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.android.volley.Request;
@@ -26,51 +23,54 @@ import java.util.HashMap;
 import java.util.Map;
 
 import adapters.ListAdapter;
+import adapters.ReceiptAdapter;
+import fragments.invite_listFragment;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
+import helper.SQLiteHandler;
+import helper.SessionManagera;
 import objects.ProductItem;
+import objects.ReceiptItem;
 
-public class MainActivity extends AppCompatActivity implements ItemClickListener {
+public class ViewReceiptActivity extends AppCompatActivity implements ItemClickListener {
     private RecyclerView recyclerView;
-    private ListAdapter adapter;
-    private ArrayList<ProductItem> feedItems;
+    private ReceiptAdapter adapter;
+    private ArrayList<ReceiptItem> feedItems;
+    private SQLiteHandler db;
+
+    String u_id;
     ImageView addlist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        addlist = findViewById(R.id.imageView3);
+        setContentView(R.layout.view_receipt);
         recyclerView =  findViewById(R.id.shopping_list);
         feedItems = new ArrayList<>();
 
 
-        adapter = new ListAdapter(MainActivity.this, feedItems);
+        adapter = new ReceiptAdapter(ViewReceiptActivity.this, feedItems);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
+        db = new SQLiteHandler(getApplicationContext());
 
-        addlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CreateList.class);
-                startActivity(intent);
-            }
-            });
 
-        list(1+"");
+        HashMap<String, String> user = db.getUserDetails(invite_listFragment.class.getSimpleName());
+
+        u_id = user.get("u_id");
+        list(u_id);
     }
 
     @Override
     public void onClick(View view, int position) {
-        final ProductItem list = feedItems.get(position);
+        final ReceiptItem list = feedItems.get(position);
       //  Toast.makeText(this, ""+ list.getName(), Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(MainActivity.this, BasketActivity.class);
-        i.putExtra("name", list.getName());
+        Intent i = new Intent(ViewReceiptActivity.this, BasketActivity.class);
+        i.putExtra("name", list.getReceipt());
         i.putExtra("id", list.getId()+"");
         startActivity(i);
     }
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         recyclerView.removeAllViews();
         feedItems.clear();
         StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
-                AppConfig.getLists,
+                AppConfig.get_receipt,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -88,28 +88,28 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                             try {
                                 JSONObject jObj = new JSONObject(response);
                                 try {
-                                    JSONArray feedArray = jObj.getJSONArray(("list"));
+                                    JSONArray feedArray = jObj.getJSONArray(("receipt"));
                                     if (feedArray.length() == 0) {
                                     } else {
                                         for (int i = 0; i < feedArray.length(); i++) {
                                             JSONObject feedObj = (JSONObject) feedArray.get(i);
-                                       //     Toast.makeText(MainActivity.this, ""+ feedObj.length() , Toast.LENGTH_SHORT).show();
-                                            ProductItem item = new ProductItem();
+                                       //     Toast.makeText(ViewReceiptActivity.this, ""+ feedObj.length() , Toast.LENGTH_SHORT).show();
+                                            ReceiptItem item = new ReceiptItem();
                                           item.setId(feedObj.getInt("id"));
-                                          item.setName(feedObj.getString("name"));
-                                          item.setUser_id(feedObj.getInt("user_id"));
-                                          item.setItem_count(feedObj.getInt("item_count"));
-                                            feedItems.add(item);
+                                            item.setReceipt(feedObj.getString("receipt"));
+                                          item.setDescr(feedObj.getString("descr"));
+                                          item.setTitle(feedObj.getString("title"));
+                                              feedItems.add(item);
                                         }
                                     }
                                     adapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
-                                //    Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                //    Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
 
                                 }
 
                             } catch (JSONException e) {
-                             //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                             //   Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
                             }
                         }
                         //	pDialog.hide();

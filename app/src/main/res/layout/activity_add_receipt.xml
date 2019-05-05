@@ -7,61 +7,120 @@
     android:background="#fff"
     tools:context=".BasketActivity">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="15dp"
-        android:text="Add Receipt"
-        android:textColor="#000"
-        android:textSize="24sp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/textView3"
-        android:orientation="vertical">
+
+        android:orientation="vertical"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="24dp"
+            android:text="Title"
+            android:textColor="@color/colorAccent"
+            android:textSize="24dp" />
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="title"
+            android:inputType="textPersonName"
+            android:paddingLeft="24dp"
+            android:text=" "
+            android:textColor="@color/colorAccent" />
 
         <TextView
             android:id="@+id/textView14"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="24dp"
-            android:textSize="24dp"
             android:text="Description"
-            android:textColor="@color/colorAccent" />
-
-        <EditText
-            android:id="@+id/descr"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:paddingLeft="24dp"
             android:textColor="@color/colorAccent"
-            android:inputType="textPersonName"
-            android:text=" "
-            android:hint="description"/>
+            android:textSize="24dp" />
 
-        <Button
-            android:id="@+id/button"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Receipt" />
+            android:orientation="horizontal"
+            android:paddingLeft="24dp"
+            android:paddingTop="24dp"
+            android:paddingRight="24dp"
+            android:weightSum="7">
 
-        <Button
-            android:id="@+id/pick"
+            <ImageView
+                android:id="@+id/profile"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="6"
+                android:scaleType="fitCenter"
+                tools:srcCompat="@tools:sample/avatars[0]" />
+
+            <EditText
+                android:id="@+id/descr"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:ems="10"
+                android:hint="description"
+                android:inputType="textPersonName"
+                android:paddingLeft="24dp"
+                android:text=" "
+                android:textColor="@color/colorAccent" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView15"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Take picture of Receipt" />
+            android:layout_marginTop="25dp"
+            android:paddingLeft="24dp"
+            android:text="Select List (Optional)"
+            android:textColor="@color/colorAccent"
+            android:textSize="24dp" />
+
+        <Spinner
+            android:id="@+id/spinner5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="32dp"
+            android:padding="16dp" />
 
         <ImageView
             android:id="@+id/iv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:visibility="visible"
             tools:srcCompat="@tools:sample/avatars[0]" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#35479D"
+        android:orientation="horizontal"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:weightSum="2">
+
+        <ImageView
+            android:id="@+id/pick"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/baseline_camera_alt_white_18dp" />
+
+        <ImageView
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/baseline_photo_white_18dp" />
     </LinearLayout>
 
 </RelativeLayout>

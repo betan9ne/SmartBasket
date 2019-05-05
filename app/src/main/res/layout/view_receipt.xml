@@ -16,27 +16,18 @@
         android:paddingLeft="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:text="Shop"
+        android:text="My Receipts"
         android:textColor="@android:color/background_dark"
         android:textSize="18sp"
         android:textStyle="bold"
         android:typeface="sans" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
+        android:id="@+id/shopping_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-         android:layout_below="@+id/textView5"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp" />
+        android:layout_below="@+id/textView5"
+          />
 
-    <ImageView
-        android:id="@+id/view_receipt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        app:srcCompat="@drawable/baseline_more_vert_black_18dp" />
 
 </RelativeLayout>

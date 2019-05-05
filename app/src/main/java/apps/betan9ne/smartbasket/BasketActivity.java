@@ -219,7 +219,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                                 try {
                                     JSONArray feedArray = jObj.getJSONArray(("basket"));
                                     if (feedArray.length() == 0) {
-                                        //   Toast.makeText(MainActivity.this, " " + feedArray.length() , Toast.LENGTH_LONG).show();
+                                        //   Toast.makeText(ViewReceiptActivity.this, " " + feedArray.length() , Toast.LENGTH_LONG).show();
                                     } else {
                                         for (int i = 0; i < feedArray.length(); i++) {
                                             JSONObject feedObj = (JSONObject) feedArray.get(i);
@@ -580,7 +580,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                                   }
 
                             } catch (JSONException e) {
-                                //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                //   Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
                             }
                         }
                         //	pDialog.hide();
@@ -619,7 +619,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                                 total.setText("Items: "+ count+", Total Cost: K"+_total);
 
                             } catch (JSONException e) {
-                                //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                //   Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
                             }
                         }
                         //	pDialog.hide();

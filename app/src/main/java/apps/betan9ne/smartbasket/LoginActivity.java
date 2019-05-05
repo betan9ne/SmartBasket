@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                         db.addUser(_email, u_id, _name, photo_);
                         session.setLogin(true);
                         Intent intent = new Intent(getApplicationContext(), ContinerActivity.class);
-                        //   intent.putExtra(MainActivity.GOOGLE_ACCOUNT, googleSignInAccount);
+                        //   intent.putExtra(ViewReceiptActivity.GOOGLE_ACCOUNT, googleSignInAccount);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();

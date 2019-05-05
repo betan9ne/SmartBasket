@@ -3,7 +3,7 @@ package helper;
 public class AppConfig {
  	//local server
 	public static String SERVER = "http://192.168.42.96/";
-	//public static String SERVER = "http://192.168.8.100/";
+	//public static String SERVER = "http://192.168.43.54/";
 	//public static String SERVER = "http://192.168.42.100/";
 		//online server
 //	private static String SERVER = "http://www.betan9ne.com/";
@@ -28,7 +28,6 @@ public class AppConfig {
 	public static String delete_list = SERVER + "list/v1/delete_list";
 	public static String delete_partner = SERVER + "list/v1/delete_partner";
 	public static String get_basket_total = SERVER + "list/v1/get_basket_total";
+	public static String get_receipt = SERVER + "list/v1/get_receipt";
 	public static String add_receipt = SERVER + "list/upload.php";
-
-
 }

@@ -273,12 +273,12 @@ public class SearchFragment extends Fragment implements ItemClickListener {
                                         }
                                     }
                                 } catch (JSONException e) {
-                                    //    Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                    //    Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
 
                                 }
 
                             } catch (JSONException e) {
-                                //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                //   Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
                             }
                         }
                         //	pDialog.hide();

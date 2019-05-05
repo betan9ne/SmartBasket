@@ -149,7 +149,7 @@ public class InvitesActivity extends AppCompatActivity implements ItemClickListe
                                     } else {
                                         for (int i = 0; i < feedArray.length(); i++) {
                                             JSONObject feedObj = (JSONObject) feedArray.get(i);
-                                            //     Toast.makeText(MainActivity.this, ""+ feedObj.length() , Toast.LENGTH_SHORT).show();
+                                            //     Toast.makeText(ViewReceiptActivity.this, ""+ feedObj.length() , Toast.LENGTH_SHORT).show();
                                             PartnersItem item = new PartnersItem();
                                             item.setId(feedObj.getInt("id"));
                                             item.setName(feedObj.getString("name"));
@@ -160,12 +160,12 @@ public class InvitesActivity extends AppCompatActivity implements ItemClickListe
                                     }
                                     adapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
-                                    //    Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                    //    Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
 
                                 }
 
                             } catch (JSONException e) {
-                                //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                //   Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
                             }
                         }
                         //	pDialog.hide();

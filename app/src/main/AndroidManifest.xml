@@ -19,7 +19,7 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".AddReceiptActivity"></activity>
+        <activity android:name=".AddReceiptActivity"  android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".SplashActivity"
             android:label="@string/app_name"
@@ -38,7 +38,7 @@
             android:name=".BasketActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ViewReceiptActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".InvitesActivity" />
         <activity android:name=".LoginActivity" />

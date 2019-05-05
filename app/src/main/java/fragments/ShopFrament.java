@@ -1,8 +1,11 @@
 package fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +25,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +38,9 @@ import java.util.List;
 import java.util.Map;
 
 import adapters.ShopItemAdapter;
+import apps.betan9ne.smartbasket.LoginActivity;
 import apps.betan9ne.smartbasket.R;
+import apps.betan9ne.smartbasket.ViewReceiptActivity;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
@@ -62,6 +70,7 @@ public class ShopFrament extends Fragment implements ItemClickListener {
 
         View v = inflater.inflate(R.layout.activity_shop, container, false);
         recyclerView =  v.findViewById(R.id.list);
+        ImageView view_receipt =  v.findViewById(R.id.view_receipt);
         dialog    = new Dialog(getContext());
         feedItems = new ArrayList<>();
         listItem = new ArrayList<ProductItem>();
@@ -83,6 +92,19 @@ public class ShopFrament extends Fragment implements ItemClickListener {
         u_id = user.get("u_id");
         list();
         getMyLists(u_id);
+
+        view_receipt.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+
+                FullScreenDialog dialog = new FullScreenDialog();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                dialog.show(ft, FullScreenDialog.TAG);
+
+                      /*   Intent intent=new Intent(getContext(), ViewReceiptActivity.class);
+                         startActivity(intent);*/
+                      }
+                });
         return v;
     }
     String list_id;
@@ -211,7 +233,7 @@ public class ShopFrament extends Fragment implements ItemClickListener {
                                     } else {
                                         for (int i = 0; i < feedArray.length(); i++) {
                                             JSONObject feedObj = (JSONObject) feedArray.get(i);
-                                            //     Toast.makeText(MainActivity.this, ""+ feedObj.length() , Toast.LENGTH_SHORT).show();
+                                            //     Toast.makeText(ViewReceiptActivity.this, ""+ feedObj.length() , Toast.LENGTH_SHORT).show();
                                             BasketItem item = new BasketItem();
                                             item.setId(feedObj.getInt("id"));
                                             item.setName(feedObj.getString("name"));
@@ -221,12 +243,12 @@ public class ShopFrament extends Fragment implements ItemClickListener {
                                     }
                                     adapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
-                                    //    Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                    //    Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
 
                                 }
 
                             } catch (JSONException e) {
-                                //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                //   Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
                             }
                         }
                         //	pDialog.hide();
@@ -266,12 +288,12 @@ public class ShopFrament extends Fragment implements ItemClickListener {
                                         }
                                     }
                                 } catch (JSONException e) {
-                                    //    Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                    //    Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
 
                                 }
 
                             } catch (JSONException e) {
-                                //   Toast.makeText(MainActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                                //   Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
                             }
                         }
                         //	pDialog.hide();
