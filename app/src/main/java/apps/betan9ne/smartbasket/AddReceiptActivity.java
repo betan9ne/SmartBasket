@@ -61,7 +61,7 @@ import helper.SQLiteHandler;
 import objects.ProductItem;
 
 public class AddReceiptActivity extends AppCompatActivity {
-    private ImageView btn, pick, profile;
+    private ImageView btn, pick;
     private EditText imageView, title;
     private ImageView iv;
     private SQLiteHandler db;
@@ -83,8 +83,7 @@ public class AddReceiptActivity extends AppCompatActivity {
         list_name =  findViewById(R.id.spinner5);
         btn = findViewById(R.id.button);
         pick = findViewById(R.id.pick);
-        profile = findViewById(R.id.profile);
-        imageView = findViewById(R.id.descr);
+         imageView = findViewById(R.id.descr);
         title = findViewById(R.id.title);
         iv = findViewById(R.id.iv);
         requestMultiplePermissions();
@@ -97,18 +96,7 @@ public class AddReceiptActivity extends AppCompatActivity {
         {
             imageLoader = AppController.getInstance().getImageLoader();
         }
-        imageLoader.get(user.get("photo"), new ImageLoader.ImageListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("image", "Image Load Error: " + error.getMessage());
-            }
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
-                if (response.getBitmap() != null) {
-                     profile.setImageBitmap(response.getBitmap());
-                }
-            }
-        });
+
         getMyLists(u_id);
 
         btn.setOnClickListener(new View.OnClickListener() {
@@ -267,7 +255,6 @@ public class AddReceiptActivity extends AppCompatActivity {
     }
 
     private void uploadImage(Bitmap bitmap){
-
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         String encodedImage = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
@@ -296,7 +283,6 @@ public class AddReceiptActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Log.e("aaaaaaa", volleyError.toString());
-
             }
         });
 

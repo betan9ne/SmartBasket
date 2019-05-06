@@ -264,7 +264,7 @@ public class ShopFrament extends Fragment implements ItemClickListener {
     }
 
 
-    public void getMyLists(final String id)
+      public void getMyLists(final String id)
     {
         listItem.clear();
         StringRequest jsonObjReq = new StringRequest(Request.Method.POST,

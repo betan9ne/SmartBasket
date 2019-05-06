@@ -1,18 +1,25 @@
 package apps.betan9ne.smartbasket;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +45,8 @@ public class ViewReceiptActivity extends AppCompatActivity implements ItemClickL
     private ReceiptAdapter adapter;
     private ArrayList<ReceiptItem> feedItems;
     private SQLiteHandler db;
+    Dialog dialog;
+    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     String u_id;
     ImageView addlist;
@@ -48,7 +57,7 @@ public class ViewReceiptActivity extends AppCompatActivity implements ItemClickL
         recyclerView =  findViewById(R.id.shopping_list);
         feedItems = new ArrayList<>();
 
-
+        dialog    = new Dialog(getApplicationContext());
         adapter = new ReceiptAdapter(ViewReceiptActivity.this, feedItems);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
@@ -68,11 +77,40 @@ public class ViewReceiptActivity extends AppCompatActivity implements ItemClickL
     @Override
     public void onClick(View view, int position) {
         final ReceiptItem list = feedItems.get(position);
-      //  Toast.makeText(this, ""+ list.getName(), Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(ViewReceiptActivity.this, BasketActivity.class);
-        i.putExtra("name", list.getReceipt());
-        i.putExtra("id", list.getId()+"");
-        startActivity(i);
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(ViewReceiptActivity.this);
+
+        View mView = getLayoutInflater().inflate(R.layout.view_custom_layout, null);
+      final  PhotoView photoView = mView.findViewById(R.id.imageView);
+      final TextView title = mView.findViewById(R.id.title);
+      final TextView close= mView.findViewById(R.id.close);
+        title.setText(list.getTitle()+" - " + list.getDescr());
+
+        if (imageLoader == null)
+        {
+            imageLoader = AppController.getInstance().getImageLoader();
+        }
+        imageLoader.get(list.getReceipt(),  new ImageLoader.ImageListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("image", "Image Load Error: " + error.getMessage());
+            }
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
+                if (response.getBitmap() != null) {
+                    photoView.setImageBitmap(response.getBitmap());
+                  }
+            }
+        });
+        mBuilder.setView(mView);
+     final  AlertDialog mDialog = mBuilder.create();
+        mDialog.show();
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+            }
+        });
     }
 
         public void list(final String id)
