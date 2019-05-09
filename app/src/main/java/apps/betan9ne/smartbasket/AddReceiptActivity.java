@@ -74,7 +74,6 @@ public class AddReceiptActivity extends AppCompatActivity {
     private static final String IMAGE_DIRECTORY = "/smartBasket";
     private int GALLERY = 1, CAMERA = 2;
     String list_id;
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,14 +91,9 @@ public class AddReceiptActivity extends AppCompatActivity {
         HashMap<String, String> user = db.getUserDetails(invite_listFragment.class.getSimpleName());
         u_id = user.get("u_id");
 
-        if (imageLoader == null)
-        {
-            imageLoader = AppController.getInstance().getImageLoader();
-        }
-
-        getMyLists(u_id);
-
-        btn.setOnClickListener(new View.OnClickListener() {
+        getMyLists();
+        fillSpinner();
+    btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,
@@ -115,10 +109,16 @@ public class AddReceiptActivity extends AppCompatActivity {
             }
         });
 
+
+
+    }
+
+    public void fillSpinner()
+    {
+
         List<String> lables = new ArrayList<String>();
         for (int i = 0; i < listItem.size(); i++) {
             lables.add(listItem.get(i).getName());
-            Toast.makeText(this, ""+listItem.get(i).getName(), Toast.LENGTH_SHORT).show();
         }
         // Creating adapter for spinner
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, lables);
@@ -126,19 +126,8 @@ public class AddReceiptActivity extends AppCompatActivity {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // attaching data adapter to spinner
         list_name.setAdapter(spinnerAdapter);
-        list_name.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                list_id =  listItem.get(position).getId() + "";
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //  Toast.makeText(AddItem.this, "ID  " , Toast.LENGTH_SHORT).show();
-            }
-        });
-
     }
-    public void getMyLists(final String id)
+    public void getMyLists()
     {
         listItem.clear();
         StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
@@ -173,7 +162,7 @@ public class AddReceiptActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("id", id);
+                params.put("id", u_id);
                 return params;
             }
         };

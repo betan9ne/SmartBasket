@@ -7,7 +7,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:name="helper.AppController"
@@ -19,7 +22,10 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".AddReceiptActivity"  android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ShopModeActivity"  android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".AddReceiptActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SplashActivity"
             android:label="@string/app_name"

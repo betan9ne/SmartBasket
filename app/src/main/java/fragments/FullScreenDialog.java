@@ -39,9 +39,11 @@ import java.util.List;
 import java.util.Map;
 
 import apps.betan9ne.smartbasket.AddReceiptActivity;
+import apps.betan9ne.smartbasket.BasketActivity;
 import apps.betan9ne.smartbasket.CreateList;
 import apps.betan9ne.smartbasket.LoginActivity;
 import apps.betan9ne.smartbasket.R;
+import apps.betan9ne.smartbasket.ShopModeActivity;
 import apps.betan9ne.smartbasket.ViewReceiptActivity;
 import helper.AppConfig;
 import helper.AppController;
@@ -61,6 +63,7 @@ public class FullScreenDialog extends DialogFragment {
     Dialog dialog;
     GoogleSignInClient googleSignInClient;
     private SessionManagera session;
+    String list_id, list_name;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,8 +119,7 @@ public class FullScreenDialog extends DialogFragment {
                 dialog.setContentView(R.layout.pick_list_dialog);
                 dialog.setTitle("Bridges");
                 Button update = (Button) dialog.findViewById(R.id.update);
-                TextView title = (TextView) dialog.findViewById(R.id.textView21);
-               final Spinner lists = (Spinner) dialog.findViewById(R.id.spinner5);
+                 final Spinner lists = (Spinner) dialog.findViewById(R.id.spinner5);
 
                 List<String> lables = new ArrayList<String>();
                 for (int i = 0; i < listItem.size(); i++) {
@@ -135,7 +137,8 @@ public class FullScreenDialog extends DialogFragment {
                 lists.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                     //   list_id =  listItem.get(position).getId() + "";
+                        list_id =  listItem.get(position).getId() + "";
+                        list_name = listItem.get(position).getName();
                     }
 
                     @Override
@@ -143,7 +146,15 @@ public class FullScreenDialog extends DialogFragment {
                         //  Toast.makeText(AddItem.this, "ID  " , Toast.LENGTH_SHORT).show();
                     }
                 });
-
+                update.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent(getContext(), ShopModeActivity.class);
+                        i.putExtra("name", list_name);
+                        i.putExtra("id", list_id);
+                        startActivity(i);
+                      }
+                });
                 dialog.show();
             }
         });

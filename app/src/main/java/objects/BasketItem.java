@@ -1,20 +1,46 @@
 package objects;
 
 public class BasketItem {
-    String name, addedBy;
+    String name, addedBy, list_id;
     double price;
-    int id;
+    int id, status;
     int quan;
 
     public BasketItem(){}
 
-    public BasketItem(int id, String name, String addedBy, double price, int quan)
+    public BasketItem(int id, String name, String list_id,  String addedBy, double price, int quan, int status)
     {
         this.id = id;
         this.name = name;
         this.price = price;
         this.quan= quan;
         this.addedBy = addedBy;
+        this.list_id = list_id;
+        this.status = status;
+    }
+
+    public int getQuan() {
+        return quan;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setQuan(int quan) {
+        this.quan = quan;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public void setList_id(String list_id) {
+        this.list_id = list_id;
+    }
+
+    public String getList_id() {
+        return list_id;
     }
 
     public String getAddedBy() {

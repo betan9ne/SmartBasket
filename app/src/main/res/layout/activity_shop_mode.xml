@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    tools:context=".BasketActivity">
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="15dp"
+        android:text="Shopping List"
+        android:textColor="#000"
+        android:textSize="24sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/textView13"
+        android:layout_below="@id/textView3"
+        android:layout_alignParentTop="false"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="24dp">
+
+
+    </android.support.v7.widget.RecyclerView>
+
+
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#35479D"
+        android:padding="24dp"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:textSize="24dp" />
+
+</RelativeLayout>
