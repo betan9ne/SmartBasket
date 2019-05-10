@@ -1,6 +1,7 @@
 package adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,10 +75,15 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.MyViewHold
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         //holder.bind(albumList.get(position), listener);
         BasketItem album = albumList.get(position);
+        if(album.getStatus() == 1)
+        {
+            holder.viewForeground.setBackgroundColor(Color.parseColor("#B8B8B8"));
+        }
         holder.name.setText(album.getName()+ " (" +  album.getQ()+")");
         holder.price.setText("K"+album.getPrice());
         holder.q.setText(album.getAddedBy());
         holder.cost.setText("Total: "+Float.parseFloat( album.getPrice() * album.getQ()+""));
+
 
     }
 

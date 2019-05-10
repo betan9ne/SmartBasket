@@ -64,7 +64,6 @@ String list_name;
         Intent intent = getIntent();
         recyclerView = findViewById(R.id.list);
 
-
         feedItems = new ArrayList<>();
         adapter = new BasketAdapter(ShopModeActivity.this, feedItems);
         _adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, Numbers);
@@ -130,22 +129,43 @@ String list_name;
 
 
 
-    private boolean updateItem(String key, Integer id, String name, String addedby, Double price, Integer quan, String list_id) {
-        //getting the specified artist reference
-        mDatabase = FirebaseDatabase.getInstance().getReference(list_name).child(id+"");
-
-        //updating artist
-        BasketItem basket = new BasketItem(id, name, list_id, addedby, price, quan);
+    private boolean updateItem(String key, Integer id, String name, String addedby, Double price, Integer quan, String list_id, Integer status) {
+         mDatabase = FirebaseDatabase.getInstance().getReference(list_name).child(id+"");
+     BasketItem basket = new BasketItem(id, name, list_id, addedby, price, quan, status);
         mDatabase.setValue(basket);
         Toast.makeText(getApplicationContext(), "Item Updated", Toast.LENGTH_LONG).show();
         return true;
     }
+
+    private boolean bought(final Integer id, final Integer status) {
+         mDatabase = FirebaseDatabase.getInstance().getReference(list_name).child(id + "").child("status");
+//        mDatabase = FirebaseDatabase.getInstance().getReference(list_name).child(id + "");
+        mDatabase.child("status").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //stat = dataSnapshot.getValue(BasketItem.class);
+                 if (status == 1) {
+                     mDatabase.setValue(0);
+                     Toast.makeText(getApplicationContext(), "Item not bought", Toast.LENGTH_LONG).show();
+                 } else if (status == 0) {
+                     mDatabase.setValue(1);
+                     Toast.makeText(getApplicationContext(), "Item bought", Toast.LENGTH_LONG).show();
+                 }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+        return true;
+    }
+
     Integer quant;
     @Override
     public void onClick(View view, int position) {
         final BasketItem city = feedItems.get(position);
-        dialog.setContentView(R.layout.update_quantity2);
-        dialog.setTitle("Bridges");
+        bought(city.getId(), city.getStatus());
+        /*dialog.setContentView(R.layout.update_quantity2);
+        dialog.setTitle("Smart Basket");
         final EditText price = dialog.findViewById(R.id.price);
         Button update = (Button) dialog.findViewById(R.id.update);
         final TextView title = (TextView) dialog.findViewById(R.id.textView21);
@@ -171,27 +191,24 @@ String list_name;
             @Override
             public void onClick(View view) {
              String key = mDatabase.child(list_name).push().getKey();
-
         updateItem(key, city.getId(), title.getText().toString(), city.getAddedBy(), Double.parseDouble(price.getText().toString()),
-                        quant, city.getList_id());
+                        quant, city.getList_id(), city.getStatus());
                dialog.dismiss();
             }
         });
-        dialog.show();
+        dialog.show();*/
     }
 
-    private void addItems(Integer id, String name, String addedby, Double price, Integer quan, String list_id) {
+    private void addItems(Integer id, String name, String addedby, Double price, Integer quan, String list_id, Integer status) {
            if (!TextUtils.isEmpty(name)) {
-       String _id = mDatabase.push().getKey();
-     BasketItem basket = new BasketItem(id, name, list_id, addedby, price, quan);
+       /*String _id = mDatabase.push().getKey();*/
+     BasketItem basket = new BasketItem(id, name, list_id, addedby, price, quan, status);
             mDatabase.child(id+"").setValue(basket);
               Toast.makeText(this, "item added", Toast.LENGTH_LONG).show();
         } else {
               Toast.makeText(this, "failed", Toast.LENGTH_LONG).show();
         }
     }
-
-
 
     public void getStarted(final String id)
     {
@@ -213,7 +230,7 @@ String list_name;
                                             JSONObject feedObj = (JSONObject) feedArray.get(i);
                                             addItems(feedObj.getInt("id"), feedObj.getString("name"),
                                                     feedObj.getString("f_name"), feedObj.getDouble("price"),
-                                                    feedObj.getInt("q"), id);
+                                                    feedObj.getInt("q"), id, 0);
                                         }
                                     }
                                     } catch (JSONException e) {
@@ -239,9 +256,6 @@ String list_name;
             }
         };
         jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
-
-
 }
