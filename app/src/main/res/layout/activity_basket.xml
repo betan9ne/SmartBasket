@@ -44,6 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="6"
+            android:visibility="gone"
             app:srcCompat="@drawable/round_group_add_black_24dp" />
     </LinearLayout>
 
@@ -67,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/textView3"
         android:layout_alignEnd="@+id/pat"
-        app:srcCompat="@drawable/round_edit_black_18dp" />
+        app:srcCompat="@drawable/baseline_more_vert_black_18dp" />
 
     <TextView
         android:id="@+id/textView13"

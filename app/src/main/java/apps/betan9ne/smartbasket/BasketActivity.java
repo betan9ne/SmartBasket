@@ -3,6 +3,9 @@ package apps.betan9ne.smartbasket;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 
 import adapters.BasketAdapter;
+import butterknife.OnClick;
+import fragments.BottomSheetFragment;
 import fragments.invite_listFragment;
 import helper.AppConfig;
 import helper.AppController;
@@ -46,7 +52,7 @@ import helper.SQLiteHandler;
 import helper.SessionManagera;
 import objects.BasketItem;
 import objects.PartnersItem;
-
+import butterknife.BindView;
 public class BasketActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, ItemClickListener {
     Bundle b;
     ImageView imageView4, imageView5;
@@ -61,8 +67,8 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
     Dialog dialog, dialog2;
     private SQLiteHandler db;
     private SessionManagera session;
-    String u_id;
-    @Override
+    String u_id, user_id;
+     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basket);
@@ -72,6 +78,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         pat = findViewById(R.id.textView7);
         imageView4 = findViewById(R.id.imageView4);
         imageView5 = findViewById(R.id.imageView5);
+        imageView4.setVisibility(View.INVISIBLE);
 
         recyclerView = (RecyclerView) findViewById(R.id.list);
         dialog    = new Dialog(BasketActivity.this);
@@ -80,8 +87,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         partnersItems = new ArrayList<>();
         adapter = new BasketAdapter(BasketActivity.this, feedItems);
         _adapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, Numbers);
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
@@ -101,12 +107,17 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         {
             b = getIntent().getExtras();
             b_id = b.getString("id");
-
+            user_id = b.getString("user_id");
             getPartners(b.getString("id"));
             getProducts(b.getString("id"));
             get_basket_total(b_id);
             list_name.setText(b.getString("name"));
         }
+        if(u_id.equals(user_id))
+        {
+            imageView4.setVisibility(View.VISIBLE);
+        }
+
 
         pat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,24 +166,12 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         imageView4.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.setContentView(R.layout.update_list_name);
-                        dialog.setTitle("Bridges");
-                        final EditText name = dialog.findViewById(R.id.name);
-                        Button update = (Button) dialog.findViewById(R.id.update);
-                        TextView title = (TextView) dialog.findViewById(R.id.textView21);
-
-                        title.setText(list_name.getText());
-
-                        update.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                update_basket_name(b_id +"", name.getText().toString());
-
-                            }
-                        });
-                        dialog.show();
-
-
+                      BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+                      bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+                        Bundle bundle = new Bundle();
+                        bundle.putString("b_id",b_id );
+                        bundle.putString("name",list_name.getText().toString() );
+                       bottomSheetFragment.setArguments(bundle);
                     }
                 });
 
@@ -180,21 +179,7 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
         imageView5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.setContentView(R.layout.invite_partner);
-                dialog.setTitle("Bridges");
-                final EditText email = dialog.findViewById(R.id.email);
-                Button update = (Button) dialog.findViewById(R.id.update);
-                TextView title = (TextView) dialog.findViewById(R.id.textView21);
 
-                title.setText(list_name.getText());
-
-                update.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        send_invite(u_id, email.getText().toString(), b_id, email.getText().toString());
-                    }
-                });
-                dialog.show();
 
 
             }
@@ -451,100 +436,6 @@ public class BasketActivity extends AppCompatActivity implements RecyclerItemTou
                 params.put("id", id);
                 params.put("q", q);
                 params.put("price", price);
-                return params;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(strReq);
-    }
-
-    public void update_basket_name(final String id, final String name){
-
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                AppConfig.update_basket_name, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jObj = new JSONObject(response);
-                    boolean error = jObj.getBoolean("error");
-                    // Check for error node in json
-                    if (!error) {
-                        String errorMsg = jObj.getString("message");
-                        Intent intent = new Intent(getApplicationContext(), ContinerActivity.class);
-                        startActivity(intent);
-                        Toast.makeText(getApplicationContext(), "List name updated", Toast.LENGTH_SHORT).show();
-                        dialog.hide();
-
-                    } else {
-                        String errorMsg = jObj.getString("message");
-                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(getApplicationContext(),										error.getMessage() + " response error", Toast.LENGTH_LONG).show();
-            }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("id", id);
-                params.put("name", name);
-
-                return params;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(strReq);
-    }
-
-    public void send_invite(final String list_owner, final String list_invite, final String list_id, final String email){
-
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                AppConfig.send_invite, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jObj = new JSONObject(response);
-                    boolean error = jObj.getBoolean("error");
-                    // Check for error node in json
-                    if (!error) {
-                        String errorMsg = jObj.getString("message");
-                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
-                        dialog.hide();
-
-                    } else if(error) {
-                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                        share.setType("text/plain");
-                        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                        share.putExtra(Intent.EXTRA_SUBJECT, "Smart Basket");
-                        share.putExtra(Intent.EXTRA_TEXT, "I want to add you to my shopping list. download SmartBasket and send me your email address");
-                        startActivity(Intent.createChooser(share, "Share link!"));
-                        dialog.hide();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(getApplicationContext(),										error.getMessage() + " response error", Toast.LENGTH_LONG).show();
-            }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("list_owner", list_owner);
-                params.put("list_invite", list_invite);
-                params.put("list_id", list_id);
-
                 return params;
             }
         };

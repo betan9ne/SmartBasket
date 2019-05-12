@@ -2,16 +2,18 @@ package helper;
 
 public class AppConfig {
  	//local server
-	public static String SERVER = "http://192.168.42.96/";
+	//public static String SERVER = "http://192.168.42.96/";
 	//public static String SERVER = "http://192.168.43.54/";
-	//public static String SERVER = "http://192.168.42.100/";
+	public static String SERVER = "http://192.168.8.101/";
 		//online server
 //	private static String SERVER = "http://www.betan9ne.com/";
 
 	public static String getLists = SERVER + "list/v1/getLists";
 	public static String getPartners = SERVER + "list/v1/getPartners";
+	public static String get_list_receipt = SERVER + "list/v1/get_list_receipt";
 	public static String getBasketItems = SERVER + "list/v1/getBasketItems";
 	public static String add_Item = SERVER + "list/v1/add_Item";
+	public static String add_history = SERVER + "list/v1/add_history";
 	public static String getItems = SERVER + "list/v1/getItems";
 	public static String updateBasketItem = SERVER + "list/v1/updateBasketItem";
 	public static String add_item_basket = SERVER + "list/v1/add_item_basket";
@@ -28,6 +30,8 @@ public class AppConfig {
 	public static String delete_list = SERVER + "list/v1/delete_list";
 	public static String delete_partner = SERVER + "list/v1/delete_partner";
 	public static String get_basket_total = SERVER + "list/v1/get_basket_total";
+	public static String getTags = SERVER + "list/v1/getTags";
 	public static String get_receipt = SERVER + "list/v1/get_receipt";
 	public static String add_receipt = SERVER + "list/upload.php";
+
 }

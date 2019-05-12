@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import apps.betan9ne.smartbasket.AddReceiptActivity;
 import apps.betan9ne.smartbasket.BasketActivity;
@@ -56,7 +57,7 @@ public class FullScreenDialog extends DialogFragment {
     public static String TAG = "FullScreenDialog";
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     private ImageView iv;
-    private TextView add_receipt, view_receipt, logout, email, shopping;
+    private TextView darkMode, logout, email;
     private SQLiteHandler db;
     private ArrayList<ProductItem> listItem;
     String u_id;
@@ -76,11 +77,9 @@ public class FullScreenDialog extends DialogFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.layout_full_screen_dialog, container, false);
         iv = v.findViewById(R.id.profile);
-        add_receipt= v.findViewById(R.id.add_receipt);
-        view_receipt= v.findViewById(R.id.view_receipt);
         logout= v.findViewById(R.id.logout);
         email= v.findViewById(R.id.email);
-        shopping= v.findViewById(R.id.shopping_mode);
+         darkMode= v.findViewById(R.id.darkMode);
 
         listItem = new ArrayList<ProductItem>();
         dialog    = new Dialog(getContext());
@@ -94,7 +93,7 @@ public class FullScreenDialog extends DialogFragment {
         HashMap<String, String> user = db.getUserDetails(invite_listFragment.class.getSimpleName());
         u_id = user.get("u_id");
         email.setText(user.get("email"));
-        getMyLists(u_id);
+
         if (imageLoader == null)
         {
             imageLoader = AppController.getInstance().getImageLoader();
@@ -111,74 +110,10 @@ public class FullScreenDialog extends DialogFragment {
                 }
             }
         });
-
-        shopping.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-
-                dialog.setContentView(R.layout.pick_list_dialog);
-                dialog.setTitle("Bridges");
-                Button update = (Button) dialog.findViewById(R.id.update);
-                 final Spinner lists = (Spinner) dialog.findViewById(R.id.spinner5);
-
-                List<String> lables = new ArrayList<String>();
-                for (int i = 0; i < listItem.size(); i++) {
-                    lables.add(listItem.get(i).getName());
-                }
-                // Creating adapter for spinner
-                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, lables);
-                // Drop down layout style - list view with radio button
-                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                // attaching data adapter to spinner
-                lists.setAdapter(spinnerAdapter);
-
-               // title.setText(list.getName());
-
-                lists.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        list_id =  listItem.get(position).getId() + "";
-                        list_name = listItem.get(position).getName();
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        //  Toast.makeText(AddItem.this, "ID  " , Toast.LENGTH_SHORT).show();
-                    }
-                });
-                update.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent i = new Intent(getContext(), ShopModeActivity.class);
-                        i.putExtra("name", list_name);
-                        i.putExtra("id", list_id);
-                        startActivity(i);
-                      }
-                });
-                dialog.show();
-            }
-        });
-
-        logout.setOnClickListener(new View.OnClickListener(){
+    logout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 logoutUser();
-            }
-        });
-
-        add_receipt.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Intent intent=new Intent(getContext(), AddReceiptActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        view_receipt.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Intent intent=new Intent(getContext(), ViewReceiptActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -199,59 +134,6 @@ public class FullScreenDialog extends DialogFragment {
 
     }
 
-
-    public void getMyLists(final String id)
-    {
-        listItem.clear();
-        StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
-                AppConfig.getMyLists,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if (response != null) {
-                            try {
-                                JSONObject jObj = new JSONObject(response);
-                                try {
-                                    JSONArray feedArray = jObj.getJSONArray(("list"));
-                                    if (feedArray.length() == 0) {
-                                    } else {
-                                        for (int i = 0; i < feedArray.length(); i++) {
-                                            JSONObject feedObj = (JSONObject) feedArray.get(i);
-                                            ProductItem item = new ProductItem();
-                                            item.setId(feedObj.getInt("id"));
-                                            item.setName(feedObj.getString("name"));
-                                            listItem.add(item);
-                                        }
-                                    }
-                                } catch (JSONException e) {
-                                    //    Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
-
-                                }
-
-                            } catch (JSONException e) {
-                                //   Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        //	pDialog.hide();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //	pDialog.hide();
-            }
-        }){
-
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("id", id);
-                return params;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
-
-    }
 
     @Override
     public void onStart() {

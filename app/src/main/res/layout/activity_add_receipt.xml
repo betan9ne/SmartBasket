@@ -15,6 +15,15 @@
         android:paddingTop="20dp">
 
         <TextView
+            android:id="@+id/textView15"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:paddingLeft="24dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="24dp" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="24dp"
@@ -29,7 +38,6 @@
             android:hint="title"
             android:inputType="textPersonName"
             android:paddingLeft="24dp"
-            android:text=" "
             android:textColor="@color/colorAccent" />
 
         <TextView
@@ -51,7 +59,6 @@
             >
 
 
-
             <EditText
                 android:id="@+id/descr"
                 android:layout_width="match_parent"
@@ -59,20 +66,8 @@
                 android:ems="10"
                 android:hint="description"
                 android:inputType="textPersonName"
-                android:paddingLeft="24dp"
-                android:text=" "
                 android:textColor="@color/colorAccent" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:paddingLeft="24dp"
-            android:text="Select List (Optional)"
-            android:textColor="@color/colorAccent"
-            android:textSize="24dp" />
 
         <Spinner
             android:id="@+id/spinner5"
@@ -81,7 +76,8 @@
             android:layout_marginLeft="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="32dp"
-            android:padding="16dp" />
+            android:padding="16dp"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/iv"

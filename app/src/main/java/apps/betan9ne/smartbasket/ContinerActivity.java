@@ -49,8 +49,6 @@ public class ContinerActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
-        //Load the HomeFragment when app is loaded
         fragment = new ShopFrament();
         loadFragment(fragment);
         initView();
@@ -143,7 +141,7 @@ public class ContinerActivity extends AppCompatActivity {
         finish();
     }
 
-    private void loadFragment(Fragment fragment) {
+    public void loadFragment(Fragment fragment) {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.view_pager, fragment);

@@ -89,6 +89,7 @@ public class ListFragment extends Fragment implements ItemClickListener {
         //  Toast.makeText(this, ""+ list.getName(), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(getContext(), BasketActivity.class);
         i.putExtra("name", list.getName());
+        i.putExtra("user_id", list.getUser_id()+"");
         i.putExtra("id", list.getId()+"");
         startActivity(i);
     }

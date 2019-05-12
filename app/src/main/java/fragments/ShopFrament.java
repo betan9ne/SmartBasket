@@ -21,6 +21,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.adroitandroid.chipcloud.ChipCloud;
+import com.adroitandroid.chipcloud.ChipListener;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import adapters.ShopItemAdapter;
+import apps.betan9ne.smartbasket.ContinerActivity;
 import apps.betan9ne.smartbasket.LoginActivity;
 import apps.betan9ne.smartbasket.R;
 import apps.betan9ne.smartbasket.ViewReceiptActivity;
@@ -48,12 +51,14 @@ import helper.SQLiteHandler;
 import helper.SessionManagera;
 import objects.BasketItem;
 import objects.ProductItem;
+import objects.TagItem;
 
 public class ShopFrament extends Fragment implements ItemClickListener {
     private RecyclerView recyclerView;
     private ShopItemAdapter adapter;
     private ArrayList<BasketItem> feedItems;
     private ArrayList<ProductItem> listItem;
+
     private SQLiteHandler db;
     private SessionManagera session;
     String u_id;
@@ -62,7 +67,7 @@ public class ShopFrament extends Fragment implements ItemClickListener {
     private ArrayList<String> lists = new ArrayList<String>();
 
     static final String[] Numbers = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12","13","14","15" };
-
+    ContinerActivity asd;
     public ShopFrament(){}
 
     @Override
@@ -71,12 +76,13 @@ public class ShopFrament extends Fragment implements ItemClickListener {
         View v = inflater.inflate(R.layout.activity_shop, container, false);
         recyclerView =  v.findViewById(R.id.list);
         ImageView view_receipt =  v.findViewById(R.id.view_receipt);
+
         dialog    = new Dialog(getContext());
         feedItems = new ArrayList<>();
+
         listItem = new ArrayList<ProductItem>();
-
+        asd = new ContinerActivity();
         adapter = new ShopItemAdapter(getContext(), feedItems);
-
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -93,17 +99,14 @@ public class ShopFrament extends Fragment implements ItemClickListener {
         list();
         getMyLists(u_id);
 
+
+
         view_receipt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-
                 FullScreenDialog dialog = new FullScreenDialog();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                dialog.show(ft, FullScreenDialog.TAG);
-
-                      /*   Intent intent=new Intent(getContext(), ViewReceiptActivity.class);
-                         startActivity(intent);*/
-                      }
+                dialog.show(ft, FullScreenDialog.TAG);       }
                 });
         return v;
     }
@@ -264,7 +267,7 @@ public class ShopFrament extends Fragment implements ItemClickListener {
     }
 
 
-      public void getMyLists(final String id)
+    public void getMyLists(final String id)
     {
         listItem.clear();
         StringRequest jsonObjReq = new StringRequest(Request.Method.POST,

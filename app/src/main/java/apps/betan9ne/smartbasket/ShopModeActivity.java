@@ -3,6 +3,7 @@ package apps.betan9ne.smartbasket;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -36,8 +37,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import adapters.BasketAdapter;
+import fragments.FullScreenDialog;
 import helper.AppConfig;
 import helper.AppController;
 import helper.ItemClickListener;
@@ -46,15 +49,16 @@ import objects.BasketItem;
 
 public class ShopModeActivity extends AppCompatActivity implements ItemClickListener {
      DatabaseReference mDatabase;
-    TextView l_name;
+    TextView l_name, done;
     RecyclerView recyclerView;
     Dialog dialog;
     String key;
     private BasketAdapter adapter;
     private ArrayList<BasketItem> feedItems;
     ArrayAdapter<String> _adapter;
+    String session;
     static final String[] Numbers = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12","13","14","15" };
-String list_name;
+String list_name, list_id;
     Bundle b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,7 @@ String list_name;
         l_name= findViewById(R.id.textView3);
         Intent intent = getIntent();
         recyclerView = findViewById(R.id.list);
+        done = findViewById(R.id.textView13);
 
         feedItems = new ArrayList<>();
         adapter = new BasketAdapter(ShopModeActivity.this, feedItems);
@@ -76,9 +81,11 @@ String list_name;
         dialog    = new Dialog(ShopModeActivity.this);
         if(getIntent().getExtras() != null) {
             b = getIntent().getExtras();
+            list_id = b.getString("id");
             l_name.setText(b.getString("name"));
             list_name = b.getString("name");
-            mDatabase = FirebaseDatabase.getInstance().getReference().child(list_name);
+            session = b.getString("session");
+            mDatabase = FirebaseDatabase.getInstance().getReference().child(list_id);
 
             getStarted(b.getString("id"));
         }
@@ -95,6 +102,34 @@ String list_name;
                 recyclerView.setAdapter(trackListAdapter);
             }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        done.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                finished_shopping();
+                 Intent intent=new Intent(getApplicationContext(), ContinerActivity.class);
+                 startActivity(intent);
+            }
+        });
+    }
+
+
+    public void finished_shopping()
+    {
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                feedItems.clear();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    BasketItem track = postSnapshot.getValue(BasketItem.class);
+                    add_history(list_id, track.getId()+"", track.getName(), track.getStatus()+"", track.getPrice()+"", track.getQ()+"", track.getAddedBy());
+                  }
+            }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -127,10 +162,51 @@ String list_name;
         });
     }
 
-
+    public void add_history(final String list_id, final String id, final String name, final String status,  final String price, final String quantity, final String added_by) {
+      StringRequest strReq = new StringRequest(Request.Method.POST,
+                AppConfig.add_history, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+                   if (!error) {
+                        String errorMsg = jObj.getString("message");
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                       } else {
+                        String errorMsg = jObj.getString("message");
+                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Toast.makeText(getApplicationContext(),										error.getMessage() + " response error", Toast.LENGTH_LONG).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("list_id", list_id);
+                params.put("id", id);
+                params.put("name", name);
+                params.put("status", status);
+                params.put("quan", quantity);
+                params.put("price", price);
+                params.put("addedBy", added_by);
+                params.put("list_session", session);
+                return params;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(strReq);
+    }
 
     private boolean updateItem(String key, Integer id, String name, String addedby, Double price, Integer quan, String list_id, Integer status) {
-         mDatabase = FirebaseDatabase.getInstance().getReference(list_name).child(id+"");
+         mDatabase = FirebaseDatabase.getInstance().getReference(b.getString("id")).child(id+"");
      BasketItem basket = new BasketItem(id, name, list_id, addedby, price, quan, status);
         mDatabase.setValue(basket);
         Toast.makeText(getApplicationContext(), "Item Updated", Toast.LENGTH_LONG).show();
@@ -138,12 +214,11 @@ String list_name;
     }
 
     private boolean bought(final Integer id, final Integer status) {
-         mDatabase = FirebaseDatabase.getInstance().getReference(list_name).child(id + "").child("status");
+         mDatabase = FirebaseDatabase.getInstance().getReference(b.getString("id")).child(id + "").child("status");
 //        mDatabase = FirebaseDatabase.getInstance().getReference(list_name).child(id + "");
         mDatabase.child("status").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //stat = dataSnapshot.getValue(BasketItem.class);
                  if (status == 1) {
                      mDatabase.setValue(0);
                      Toast.makeText(getApplicationContext(), "Item not bought", Toast.LENGTH_LONG).show();
@@ -206,10 +281,8 @@ String list_name;
             mDatabase.child(id+"").setValue(basket);
               Toast.makeText(this, "item added", Toast.LENGTH_LONG).show();
         } else {
-              Toast.makeText(this, "failed", Toast.LENGTH_LONG).show();
-        }
+              Toast.makeText(this, "failed", Toast.LENGTH_LONG).show();        }
     }
-
     public void getStarted(final String id)
     {
         final ProgressDialog diag  = new ProgressDialog(ShopModeActivity.this);

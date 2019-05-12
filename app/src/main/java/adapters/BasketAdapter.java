@@ -2,6 +2,7 @@ package adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,8 +78,12 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.MyViewHold
         BasketItem album = albumList.get(position);
         if(album.getStatus() == 1)
         {
-            holder.viewForeground.setBackgroundColor(Color.parseColor("#B8B8B8"));
-        }
+            holder.name.setPaintFlags( holder.name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.price.setPaintFlags( holder.price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.cost.setPaintFlags( holder.cost.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.q.setPaintFlags( holder.q.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+         }
         holder.name.setText(album.getName()+ " (" +  album.getQ()+")");
         holder.price.setText("K"+album.getPrice());
         holder.q.setText(album.getAddedBy());

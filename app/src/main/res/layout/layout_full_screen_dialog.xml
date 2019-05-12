@@ -31,31 +31,13 @@
                 android:textColor="@android:color/darker_gray"
                 android:textSize="24dp"
                 android:textStyle="bold" />
-            <TextView
-                android:id="@+id/shopping_mode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16sp"
-                android:text="Shopping Mode"
-                android:textColor="@android:color/background_dark"
-                android:textSize="24dp"
-                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/add_receipt"
+                android:id="@+id/darkMode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16sp"
-                android:text="Add receipt"
-                android:textColor="@android:color/background_dark"
-                android:textSize="24dp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/view_receipt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16sp"
-                android:text="My receipts"
+                android:text="Dark Mode"
                 android:textColor="@android:color/background_dark"
                 android:textSize="24dp"
                 android:textStyle="bold" />

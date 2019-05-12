@@ -34,7 +34,6 @@
     </android.support.v7.widget.RecyclerView>
 
 
-
     <TextView
         android:id="@+id/textView13"
         android:layout_width="match_parent"
@@ -42,7 +41,7 @@
         android:layout_alignParentBottom="true"
         android:background="#35479D"
         android:padding="24dp"
-        android:text=""
+        android:text="FINISH SHOPPING"
         android:textColor="#FFFFFF"
         android:textSize="24dp" />
 

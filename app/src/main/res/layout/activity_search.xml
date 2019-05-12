@@ -61,6 +61,29 @@
 
         </SearchView>
 
+        <com.adroitandroid.chipcloud.ChipCloud xmlns:chipcloud="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/chip_cloud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
+            android:paddingLeft="16sp"
+
+            android:paddingTop="16sp"
+            android:paddingRight="16sp"
+            android:paddingBottom="16sp"
+            chipcloud:allCaps="false"
+            chipcloud:deselectTransitionMS="500"
+            chipcloud:gravity="center"
+            chipcloud:minHorizontalSpacing="16dp"
+            chipcloud:selectMode="required"
+            chipcloud:selectTransitionMS="500"
+            chipcloud:selectedColor="@color/twitter_blue"
+            chipcloud:selectedFontColor="@color/white"
+            chipcloud:textSize="14sp"
+            chipcloud:verticalSpacing="16dp" />
+
+
         <ImageView
             android:id="@+id/imageView6"
             android:layout_width="match_parent"

@@ -61,6 +61,7 @@ import helper.SQLiteHandler;
 import objects.ProductItem;
 
 public class AddReceiptActivity extends AppCompatActivity {
+    Bundle b;
     private ImageView btn, pick;
     private EditText imageView, title;
     private ImageView iv;
@@ -91,6 +92,11 @@ public class AddReceiptActivity extends AppCompatActivity {
         HashMap<String, String> user = db.getUserDetails(invite_listFragment.class.getSimpleName());
         u_id = user.get("u_id");
 
+        if(getIntent().getExtras() != null)
+        {
+            b = getIntent().getExtras();
+            list_id = b.getString("list_id");
+        }
         getMyLists();
         fillSpinner();
     btn.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +121,6 @@ public class AddReceiptActivity extends AppCompatActivity {
 
     public void fillSpinner()
     {
-
         List<String> lables = new ArrayList<String>();
         for (int i = 0; i < listItem.size(); i++) {
             lables.add(listItem.get(i).getName());

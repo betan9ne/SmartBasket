@@ -47,9 +47,10 @@ public class ViewReceiptActivity extends AppCompatActivity implements ItemClickL
     private SQLiteHandler db;
     Dialog dialog;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-
+    Bundle b;
     String u_id;
     ImageView addlist;
+    String list_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +67,16 @@ public class ViewReceiptActivity extends AppCompatActivity implements ItemClickL
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
         db = new SQLiteHandler(getApplicationContext());
-
+        if(getIntent().getExtras() != null)
+        {
+            b = getIntent().getExtras();
+            list_id = b.getString("list_id");
+        }
 
         HashMap<String, String> user = db.getUserDetails(invite_listFragment.class.getSimpleName());
 
         u_id = user.get("u_id");
-        list(u_id);
+        list(list_id);
     }
 
     @Override
@@ -118,7 +123,7 @@ public class ViewReceiptActivity extends AppCompatActivity implements ItemClickL
         recyclerView.removeAllViews();
         feedItems.clear();
         StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
-                AppConfig.get_receipt,
+                AppConfig.get_list_receipt,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -131,8 +136,7 @@ public class ViewReceiptActivity extends AppCompatActivity implements ItemClickL
                                     } else {
                                         for (int i = 0; i < feedArray.length(); i++) {
                                             JSONObject feedObj = (JSONObject) feedArray.get(i);
-                                       //     Toast.makeText(ViewReceiptActivity.this, ""+ feedObj.length() , Toast.LENGTH_SHORT).show();
-                                            ReceiptItem item = new ReceiptItem();
+                                             ReceiptItem item = new ReceiptItem();
                                           item.setId(feedObj.getInt("id"));
                                             item.setReceipt(feedObj.getString("receipt"));
                                           item.setDescr(feedObj.getString("descr"));
@@ -142,13 +146,10 @@ public class ViewReceiptActivity extends AppCompatActivity implements ItemClickL
                                     }
                                     adapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
-                                //    Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
-
-                                }
+                                 }
 
                             } catch (JSONException e) {
-                             //   Toast.makeText(ViewReceiptActivity.this, "hi"+ e.getMessage() , Toast.LENGTH_SHORT).show();
-                            }
+                              }
                         }
                         //	pDialog.hide();
                     }
@@ -167,8 +168,5 @@ public class ViewReceiptActivity extends AppCompatActivity implements ItemClickL
             }
         };
         AppController.getInstance().addToRequestQueue(jsonObjReq);
-
-    }
-
-
+   }
 }

@@ -20,6 +20,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.adroitandroid.chipcloud.ChipCloud;
+import com.adroitandroid.chipcloud.ChipListener;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -43,6 +45,7 @@ import helper.SQLiteHandler;
 import helper.SessionManagera;
 import objects.BasketItem;
 import objects.ProductItem;
+import objects.TagItem;
 
 public class SearchFragment extends Fragment implements ItemClickListener {
     private RecyclerView recyclerView;
@@ -53,11 +56,13 @@ public class SearchFragment extends Fragment implements ItemClickListener {
     TextView coun;
     LinearLayout line0;
     Bundle b;
+    private ArrayList<TagItem> tagItem;
     Dialog dialog;
     ImageView empty;
     private SQLiteHandler db;
     private SessionManagera session;
     String u_id;
+    ChipCloud chipCloud;
     ArrayAdapter<String> _adapter;
     static final String[] Numbers = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12","13","14","15" };
 
@@ -72,6 +77,7 @@ public class SearchFragment extends Fragment implements ItemClickListener {
         coun = (TextView) v.findViewById(R.id.ago);
         empty = v.findViewById(R.id.imageView6);
         dialog    = new Dialog(getContext());
+        chipCloud = v.findViewById(R.id.chip_cloud);
         feedItems = new ArrayList<>();
         listItem = new ArrayList<ProductItem>();
         adapter = new ShopItemAdapter(getContext(), feedItems);
@@ -82,6 +88,20 @@ public class SearchFragment extends Fragment implements ItemClickListener {
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
         _adapter= new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Numbers);
+        tagItem = new ArrayList<>();
+        chipCloud.setChipListener(new ChipListener() {
+            @Override
+            public void chipSelected(int index) {
+                TagItem item = tagItem.get(index);
+                recyclerView.setVisibility(View.VISIBLE);
+                empty.setVisibility(View.GONE);
+                search(item.getName());
+            }
+            @Override
+            public void chipDeselected(int index) {
+                //...
+            }
+        });
 
         search_.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -112,18 +132,15 @@ public class SearchFragment extends Fragment implements ItemClickListener {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     empty.setVisibility(View.GONE);
-                    // searchView expanded
-                } else {
-                   // empty.setVisibility(View.VISIBLE);
-                    // searchView not expanded
-                }
+                  } else {
+                 }
             }
         });
         db = new SQLiteHandler(getContext());
 
         session = new SessionManagera(getContext());
         HashMap<String, String> user = db.getUserDetails(invite_listFragment.class.getSimpleName());
-
+        get_Tags();
         u_id = user.get("u_id");
         getMyLists(u_id);
         return v;
@@ -189,6 +206,48 @@ public class SearchFragment extends Fragment implements ItemClickListener {
         dialog.show();
     }
 
+    public void get_Tags()
+    {
+        tagItem.clear();
+        StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
+                AppConfig.getTags,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (response != null) {
+                            try {
+                                JSONObject jObj = new JSONObject(response);
+                                try {
+                                    JSONArray feedArray = jObj.getJSONArray(("search"));
+                                    if (feedArray.length() == 0) {
+                                    } else {
+                                        for (int i = 0; i < feedArray.length(); i++) {
+                                            JSONObject feedObj = (JSONObject) feedArray.get(i);
+                                            TagItem item = new TagItem();
+                                            item.setName(feedObj.getString("term"));
+                                            tagItem.add(item);
+                                            chipCloud.addChip(feedObj.getString("term"));
+                                        }
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                } catch (JSONException e) {
+                                }
+
+                            } catch (JSONException e) {
+                            }
+                        }
+                        //	pDialog.hide();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //	pDialog.hide();
+            }
+        });
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+    }
+
+
     public void search(final String search)
     {
         recyclerView.removeAllViews();
@@ -207,6 +266,8 @@ public class SearchFragment extends Fragment implements ItemClickListener {
                                     JSONArray feedArray = jObj.getJSONArray(("items"));
                                     if (feedArray.length() == 0) {
                                         coun.setText("No Items Found");
+                                        recyclerView.setVisibility(View.GONE);
+                                        empty.setVisibility(View.VISIBLE);
                                     } else {
                                         coun.setText(feedArray.length()+" Items Found");
                                         for (int i = 0; i < feedArray.length(); i++) {

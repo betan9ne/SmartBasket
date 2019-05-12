@@ -81,6 +81,7 @@ public class invite_listFragment extends Fragment implements ItemClickListener {
         Intent i = new Intent(getContext(), BasketActivity.class);
         i.putExtra("name", list.getName());
         i.putExtra("id", list.getId()+"");
+        i.putExtra("user_id", list.getUser_id()+"");
         startActivity(i);
     }
 
