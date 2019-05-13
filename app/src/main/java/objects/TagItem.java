@@ -1,12 +1,22 @@
 package objects;
 
 public class TagItem {
+    int id;
     String name;
 
     public TagItem(){}
 
-    public TagItem( String name) {
+    public TagItem( String name, int id) {
         this.name = name;
+        this.id = id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

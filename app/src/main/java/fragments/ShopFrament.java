@@ -104,7 +104,7 @@ public class ShopFrament extends Fragment implements ItemClickListener {
         view_receipt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                FullScreenDialog dialog = new FullScreenDialog();
+                CategoryFragment dialog = new CategoryFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 dialog.show(ft, FullScreenDialog.TAG);       }
                 });
