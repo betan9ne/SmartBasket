@@ -79,11 +79,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> 
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         ProductItem album = albumList.get(position);
 
-       if(position % 4 == 0)
-        {
-            holder.bck.setBackgroundColor(Color.parseColor("#35479D"));
-        }
-        else if(position % 3 == 0)
+      if(position % 3 == 0)
         {
             holder.bck.setBackgroundColor(Color.parseColor("#28267A"));
         }

@@ -1,6 +1,7 @@
 package apps.betan9ne.smartbasket;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -34,6 +35,7 @@ import fragments.ShopFrament;
 public class ContinerActivity extends AppCompatActivity {
     private FrameLayout viewPager;
     private Fragment fragment;
+    SharedPreferences pref;
     // collections
     private SparseIntArray items;// used for change ViewPager selected item
     private List<Fragment> fragments;// used for ViewPager adapter
@@ -46,6 +48,7 @@ public class ContinerActivity extends AppCompatActivity {
 
         bottomNavigationView= findViewById(R.id.bottom_bar);
         viewPager =findViewById(R.id.view_pager);
+        pref = getApplication().getSharedPreferences("avenger", 0); // 0 - for private mode
 
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -54,9 +57,12 @@ public class ContinerActivity extends AppCompatActivity {
         initView();
         initData();
 
+        if(pref.contains("cat_id")) {
+            fragment = new ShopFrament();
+            loadFragment(fragment);
+        }
 
-
-    }
+        }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {

@@ -1,6 +1,8 @@
 package fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.support.v4.app.DialogFragment;
@@ -31,6 +33,7 @@ import java.util.List;
 
 import adapters.CatAdapter;
 import adapters.ShopItemAdapter;
+import apps.betan9ne.smartbasket.ContinerActivity;
 import apps.betan9ne.smartbasket.R;
 import helper.AppConfig;
 import helper.AppController;
@@ -42,7 +45,7 @@ public class CategoryFragment extends DialogFragment  implements ItemClickListen
     private RecyclerView recyclerView;
     private ArrayList<TagItem> feedItems;
     private CatAdapter adapter;
-
+    SharedPreferences pref;
     public CategoryFragment() {
         // Required empty public constructor
     }
@@ -60,6 +63,9 @@ public class CategoryFragment extends DialogFragment  implements ItemClickListen
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.cat_list, container, false);
 
+        pref = getContext().getSharedPreferences("avenger", 0); // 0 - for private mode
+
+
         recyclerView =  v.findViewById(R.id.list);
         feedItems = new ArrayList<>();
         adapter = new CatAdapter(getContext(), feedItems);
@@ -67,7 +73,7 @@ public class CategoryFragment extends DialogFragment  implements ItemClickListen
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
-        adapter.setClickListener(this);
+       // adapter.setClickListener(this);
 
         list();
         return  v;
@@ -76,6 +82,12 @@ public class CategoryFragment extends DialogFragment  implements ItemClickListen
     @Override
     public void onClick(View view, int position) {
         final TagItem list = feedItems.get(position);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("cat_id", list.getId()+""); // Storing string
+        editor.putString("cat_name", list.getName()); // Storing string
+        editor.commit(); // commit changes
+        dismiss();
+
     }
 
     public void list()
